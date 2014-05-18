@@ -107,8 +107,16 @@ Key Bindings.
 
 ** Window switching.
 =C-x o= goes to the next window, Shift+direction arrow moves between frames.
+
 #+begin_src emacs-lisp 
-(windmove-default-keybindings) 
+;(windmove-default-keybindings) 
+
+(global-set-key (kbd "s-<left>")  'windmove-left)
+(global-set-key (kbd "s-<right>") 'windmove-right)
+(global-set-key (kbd "s-<up>")    'windmove-up)
+(global-set-key (kbd "s-<down>")  'windmove-down)
+
+
 (global-set-key (kbd "C-x O") (lambda () (interactive) (other-window -1))) ;; back one
 (global-set-key (kbd "C-x C-o") (lambda () (interactive) (other-window 2))) ;; forward two
 (setq windmove-wrap-around t)
@@ -118,7 +126,7 @@ Key Bindings.
 When your frame (i.e., the main Emacs window) is split into different parts (e.g. using =C-x 2= or =C-x 3=), you sometimes want to resize these parts dynamically. This defines =Shift-C-[arrow keys]= so you can do this easily. 
  
 #+srcname: resize-splits
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
   ;; resizing 'windows' (i.e., inside the frame)
   (global-set-key (kbd "S-C-<left>") 'shrink-window-horizontally)
   (global-set-key (kbd "S-C-<right>") 'enlarge-window-horizontally)

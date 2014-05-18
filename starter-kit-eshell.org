@@ -18,7 +18,7 @@ This is part of the [[file:starter-kit.org][Emacs Starter Kit]].
        (require 'em-term)
        ;; TODO: for some reason requiring this here breaks it, but
        ;; requiring it after an eshell session is started works fine.
-       ;; (require 'eshell-vc)
+       ;(require 'eshell-vc)
        (setenv "PAGER" "cat")
        ; (set-face-attribute 'eshell-prompt nil :foreground "turquoise1")
        (add-hook 'eshell-mode-hook ;; for some reason this needs to be a hook
@@ -28,8 +28,7 @@ This is part of the [[file:starter-kit.org][Emacs Starter Kit]].
        (add-to-list 'eshell-command-completions-alist
                     '("gunzip" "gz\\'"))
        (add-to-list 'eshell-command-completions-alist
-                    '("tar" "\\(\\.tar|\\.tgz\\|\\.tar\\.gz\\)\\'"))
-       (add-to-list 'eshell-output-filter-functions 'eshell-handle-ansi-color)))
+                    '("tar" "\\(\\.tar|\\.tgz\\|\\.tar\\.gz\\)\\'"))))
 #+end_src
 
 The =eshell= directory holds alias definitions and history

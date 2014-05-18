@@ -479,6 +479,12 @@ Located in [[file:starter-kit-python.org][starter-kit-python]]
 (starter-kit-load "starter-kit-python.org")
 #+end_src
 
+*** Starter Kit Haskell
+Located in [[file:starter-kit-haskell.org][starter-kit-haskell]]
+
+#+begin_src emacs-lisp
+(starter-kit-load "starter-kit-haskell.org")
+#+end_src
 *** Starter Kit Latex
 Located in [[file:starter-kit-latex.org][starter-kit-latex]]
 

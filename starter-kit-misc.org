@@ -24,11 +24,14 @@ or =M-x load-theme solarized-light=. You can also try loading the
 =zenburn-theme= or =tango-2= themes. If this doesn't work first time,
 load it manually with =M-x load-theme solarized-light=.
 
+I am using the =monokai= theme which you may need to install using 
+=M-x package-install monokai-theme= which requires Emacs 24.
+
 #+source: colors
 #+begin_src emacs-lisp
   (add-to-list 'custom-theme-load-path "~/.emacs.d/elpa")
   (setq custom-safe-themes t)
-  (load-theme 'solarized-light t)
+  (load-theme 'monokai t)
 #+end_src
 
 ** Window system 
@@ -36,9 +39,9 @@ load it manually with =M-x load-theme solarized-light=.
 #+srcname: starter-kit-window-view-stuff
 #+begin_src emacs-lisp 
   (when window-system
-    (setq frame-title-format '(buffer-file-name "%f" ("%b")))
+    (setq frame-title-format '(buffer-file-name "%f - Emacs" ("%b - Emacs")))
     (tooltip-mode -1)
-    (tool-bar-mode -1)
+    (tool-bar-mode 1)
     (blink-cursor-mode -1))
   
   (mouse-wheel-mode t)
@@ -76,6 +79,12 @@ for information on installing nxhtml see [[http://www.emacswiki.org/emacs/Nxhtml
 
 ** Set browser
 Set this to whatever browser you use e.g...
+In my case whatever generic Chromium browser
+#+begin_src emacs-lisp
+(setq browse-url-browser-function 'browse-url-generic
+      browse-url-generic-program "google-chrome")
+#+end_src
+
 : ;; (setq browse-url-browser-function 'browse-url-firefox)
 : ;; (setq browse-url-browser-function 'browse-default-macosx-browser)
 : ;; (setq browse-url-browser-function 'browse-default-windows-browser)
@@ -172,8 +181,9 @@ ido-mode is like magic pixie dust!
 #+end_src
 
 ** Associate modes with file extensions
+[[https://github.com/magit/magit/issues/1014][magit conflict]] fix
 #+begin_src emacs-lisp
-(add-to-list 'auto-mode-alist '("COMMIT_EDITMSG$" . diff-mode))
+;(add-to-list 'auto-mode-alist '("COMMIT_EDITMSG$" . diff-mode)) 
 (add-to-list 'auto-mode-alist '("\\.css$" . css-mode))
 (require 'yaml-mode)
 (add-to-list 'auto-mode-alist '("\\.ya?ml$" . yaml-mode))

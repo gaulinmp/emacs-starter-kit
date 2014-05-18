@@ -88,8 +88,7 @@ On your first run, this should pull in all the base packages.
 Make sure the PATH variable is set properly. (Uses exec-path-from-shell package.)
 #+source: fix-path
 #+begin_src emacs-lisp
-  (when (memq window-system '(mac ns))
-  (exec-path-from-shell-initialize))
+(exec-path-from-shell-initialize)
 #+end_src
 
 

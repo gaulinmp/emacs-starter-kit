@@ -41,12 +41,12 @@
 ;; Set default font. First one found is selected.
 (cond
  ((eq window-system nil) nil)
+ ((font-existsp "Consolas")
+  (set-face-attribute 'default nil :height 121 :font "Consolas"))
  ((font-existsp "PragmataPro")
   (set-face-attribute 'default nil :height 121 :font "PragmataPro"))
  ((font-existsp "Menlo")
   (set-face-attribute 'default nil :height 121 :font "Menlo"))
- ((font-existsp "Consolas")
-  (set-face-attribute 'default nil :height 121 :font "Consolas"))
  ((font-existsp "Inconsolata")
   (set-face-attribute 'default nil :height 121 :font "Inconsolata"))
  )
@@ -60,3 +60,5 @@
 
 ;;; init.el ends here
 (put 'upcase-region 'disabled nil)
+(put 'downcase-region 'disabled nil)
+(put 'erase-buffer 'disabled nil)
