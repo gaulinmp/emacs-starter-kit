@@ -107,7 +107,6 @@ This file provides settings for ESS and R.
             (my-ess-start-SAS)) ; Launch SAS
           (if (equal ess-language "STA")
             (my-ess-start-STATA)) ; Launch STATA
-          )
   
           (if (and transient-mark-mode mark-active)
               (call-interactively 'ess-eval-region)
