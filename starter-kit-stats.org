@@ -5,9 +5,8 @@ This is part of the [[file:starter-kit.org][Emacs Starter Kit]].
 
 This file provides settings for ESS and R. 
 
-* R and ESS
-   Load ESS: Emacs Speaks Statistics, and several further tweaks for
- R. 
+* ESS
+   Load ESS: Emacs Speaks Statistics, and several further tweaks for R. 
 
 ** Load ESS 
 #+src-name: ess-mode
@@ -54,7 +53,7 @@ This file provides settings for ESS and R.
   (setq ess-swv-processor "'knitr")
 #+end_src
  
-** Make shift-enter to a lot in ESS.
+** Make shift-enter do a lot in ESS.
  Use shift-enter to split window & launch R (if not running), execute
  highlighted region (if R running & area highlighted), or execute
  current line (and move to next line, skipping comments). Nice. See
@@ -62,40 +61,175 @@ This file provides settings for ESS and R.
  FelipeCsaszar. Adapted to split vertically instead of horizontally. 
 #+src-name: ess-shift-enter
 #+begin_src emacs-lisp
-(setq ess-ask-for-ess-directory nil)
-  (setq ess-local-process-name "R")
-  (setq ansi-color-for-comint-mode 'filter)
-  (setq comint-scroll-to-bottom-on-input t)
-  (setq comint-scroll-to-bottom-on-output t)
-  (setq comint-move-point-for-output t)
-  (defun my-ess-start-R ()
-    (interactive)
-    (if (not (member "*R*" (mapcar (function buffer-name) (buffer-list))))
-      (progn
-	(delete-other-windows)
-	(setq w1 (selected-window))
-	(setq w1name (buffer-name))
-	(setq w2 (split-window w1 nil t))
-	(R)
-	(set-window-buffer w2 "*R*")
-	(set-window-buffer w1 w1name))))
-  (defun my-ess-eval ()
-    (interactive)
-    (my-ess-start-R)
-    (if (and transient-mark-mode mark-active)
-	(call-interactively 'ess-eval-region)
-      (call-interactively 'ess-eval-line-and-step)))
-  (add-hook 'ess-mode-hook
-	    '(lambda()
-	       (local-set-key [(shift return)] 'my-ess-eval)))
-  (add-hook 'inferior-ess-mode-hook
-	    '(lambda()
-	       (local-set-key [C-up] 'comint-previous-input)
-	       (local-set-key [C-down] 'comint-next-input)))
- (add-hook 'Rnw-mode-hook 
-          '(lambda() 
-             (local-set-key [(shift return)] 'my-ess-eval))) 
-  (require 'ess-site)
+    ;; R Stuff
+      (setq ess-ask-for-ess-directory nil)
+        (setq ess-local-process-name "R")
+        (setq ansi-color-for-comint-mode 'filter)
+        (setq comint-scroll-to-bottom-on-input t)
+        (setq comint-scroll-to-bottom-on-output t)
+        (setq comint-move-point-for-output t)
+        (defun my-ess-start-R ()
+          (interactive)
+          (if (not (member "*R*" (mapcar (function buffer-name) (buffer-list))))
+            (progn
+              (delete-other-windows)
+              (setq w1 (selected-window))
+              (setq w1name (buffer-name))
+              (setq w2 (split-window w1 nil t))
+              (R)
+              (set-window-buffer w2 "*R*")
+              (set-window-buffer w1 w1name))))
+    
+    ;; SAS Stuff
+        (defun my-ess-start-SAS ()
+          (interactive)
+            (if (not (member "*SAS*" (mapcar (function buffer-name) (buffer-list))))
+              (progn
+            (SAS)
+            (other-window -1)
+            (ess-sas-3window))))
+    
+        (defun ess-sas-3window ()
+        "Put running SAS buffers into three windows in one frame.
+        Place the cursor in a myfile.sas buffer. Run SAS with M-x SAS,
+        Return the cursor to the myfile.sas buffer,
+        then enter C-c 3 to put myfile.sas in the upperleft window,
+        ,*SAS.log* in the upperright window, and *SAS.lst* buffers in
+        the bottom window. The *SAS* buffer remains buried."
+        (interactive)
+        (delete-other-windows)
+        (setq w1 (selected-window))
+        (setq w2 (split-window-horizontally))
+        (other-window 1)
+        (set-window-buffer w2 "*SAS.log*")
+        (setq w3 (split-window-vertically))
+        (set-window-buffer w3 "*SAS*")
+        (other-window -1)
+        )
+    
+    ;; STATA Stuff
+        (defun my-ess-start-STATA ()
+          (interactive)
+            (if (not (member "*stata*" (mapcar (function buffer-name) (buffer-list))))
+              (progn
+            (stata)
+            (other-window -1)
+            (ess-stata-2window))))
+    
+        (defun ess-stata-2window ()
+         (interactive)
+          (delete-other-windows)
+          (setq w1 (selected-window))
+          (setq w2 (split-window-horizontally))
+          (other-window 1)
+          (set-window-buffer w2 "*stata*")
+          (other-window -1)
+         )
+    
+    
+    ;; ESS Stuff
+        (defun my-ess-eval ()
+          (interactive)
+          (if (equal ess-language "R")
+            (my-ess-start-R)) ; Launch R
+          (if (equal ess-language "SAS")
+            (progn 
+            (my-ess-start-SAS) ; Launch SAS
+            (ess-sas-3window))
+          )
+          (if (equal ess-language "STA")
+            (progn 
+            (my-ess-start-STATA) ; Launch STATA
+            (ess-stata-2window))
+          )
+  
+          (if (and transient-mark-mode mark-active)
+              (call-interactively 'ess-eval-region)
+            (call-interactively 'ess-eval-line-and-step)))
+        (add-hook 'ess-mode-hook
+                  '(lambda()
+                     (local-set-key [(shift return)] 'my-ess-eval)))
+        (add-hook 'inferior-ess-mode-hook
+                  '(lambda()
+                     (local-set-key [C-up] 'comint-previous-input)
+                     (local-set-key [C-down] 'comint-next-input)))
+       (add-hook 'Rnw-mode-hook 
+                '(lambda() 
+                   (local-set-key [(shift return)] 'my-ess-eval))) 
+        (require 'ess-site)
+  
+  ;ESS hangs if you eval long statements;
+  (setq ess-eval-visibly-p nil)
+#+end_src
+
+** R-autos
+   Function completion. Conflicts with autocomplete.
+#+begin_src emacs_lisp :tangle no
+  (require 'r-autoyas)
+  (add hook 'ess-mode-hook 'r-autoyas-ess-activate)
+#+end_src
+** R-object tooltips
+Taken from http://blogisticreflections.wordpress.com/2009/10/01/r-object-tooltips-in-ess/
+#+begin_quote 
+ I have defined a function, ess-R-object-tooltip, that when
+ invoked, will return a tooltip with some information about
+ the object at point.  The information returned is
+ determined by which R function is called.  This is controlled
+ by an alist, called ess-R-object-tooltip-alist.  The default is
+ given below.  The keys are the classes of R object that will
+ use the associated function.  For example, when the function
+ is called while point is on a factor object, a table of that
+ factor will be shown in the tooltip.  The objects must of course
+ exist in the associated inferior R process for this to work.
+ The special key "other" in the alist defines which function
+ to call when the class is not mached in the alist.  By default,
+ the str function is called, which is actually a fairly useful
+ default for data.frame and function objects.
+#+end_quote
+
+
+#+srcname: r-object-tooltips
+#+begin_src emacs-lisp
+;; the alist
+(setq ess-R-object-tooltip-alist
+      '((numeric    . "summary")
+        (factor     . "table")
+        (integer    . "summary")
+        (lm         . "summary")
+        (other      . "str")))
+
+(defun ess-R-object-tooltip ()
+  "Get info for object at point, and display it in a tooltip."
+  (interactive)
+  (let ((objname (current-word))
+        (curbuf (current-buffer))
+        (tmpbuf (get-buffer-create "**ess-R-object-tooltip**")))
+    (if objname
+        (progn
+          (ess-command (concat "class(" objname ")\n")  tmpbuf )
+          (set-buffer tmpbuf)
+          (let ((bs (buffer-string)))
+            (if (not(string-match "\(object .* not found\)\|unexpected" bs))
+                (let* ((objcls (buffer-substring
+                                (+ 2 (string-match "\".*\"" bs))
+                                (- (point-max) 2)))
+                       (myfun (cdr(assoc-string objcls
+                                                ess-R-object-tooltip-alist))))
+                  (progn
+                    (if (eq myfun nil)
+                        (setq myfun
+                              (cdr(assoc-string "other"
+                                                ess-R-object-tooltip-alist))))
+                    (ess-command (concat myfun "(" objname ")\n") tmpbuf)
+                    (let ((bs (buffer-string)))
+                      (progn
+                        (set-buffer curbuf)
+                        (tooltip-show-at-point bs 0 30)))))))))
+    (kill-buffer tmpbuf)))
+
+;; default key map
+(define-key ess-mode-map "\C-c\C-g" 'ess-R-object-tooltip)
+(provide 'ess-R-object-tooltip)
 #+end_src
 
 ** Make ESS support cacheSweave() library in R
@@ -169,3 +303,408 @@ This is useful for when you have buffers with many similar names, as when there 
   (require 'uniquify)
   (setq uniquify-buffer-name-style 'post-forward-angle-brackets)  
 #+end_src
+** SAS
+#+BEGIN_SRC emacs-lisp :tangle ob-sas.el
+  ;;; ob-sas.el --- org-babel functions for R code evaluation
+  
+  ;; Copyright (C) 2009-2014 Free Software Foundation, Inc.
+  
+  ;; Author: Eric Schulte
+  ;;      Dan Davison
+  ;;      Edwin Hu
+  ;; Keywords: literate programming, reproducible research, R, statistics
+  ;; Homepage: http://orgmode.org
+  
+  ;; This file is part of GNU Emacs.
+  
+  ;; GNU Emacs is free software: you can redistribute it and/or modify
+  ;; it under the terms of the GNU General Public License as published by
+  ;; the Free Software Foundation, either version 3 of the License, or
+  ;; (at your option) any later version.
+  
+  ;; GNU Emacs is distributed in the hope that it will be useful,
+  ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ;; GNU General Public License for more details.
+  
+  ;; You should have received a copy of the GNU General Public License
+  ;; along with GNU Emacs.  If not, see <http://www.gnu.org/licenses/>.
+  
+  ;;; Commentary:
+  
+  ;; Org-Babel support for evaluating R code
+  
+  ;;; Code:
+  (require 'ob)
+  (eval-when-compile (require 'cl))
+  
+  (declare-function orgtbl-to-tsv "org-table" (table params))
+  (declare-function SAS "ext:essd-sas" (&optional start-args))
+  (declare-function inferior-ess-send-input "ext:ess-inf" ())
+  (declare-function ess-make-buffer-current "ext:ess-inf" ())
+  (declare-function ess-eval-buffer "ext:ess-inf" (vis))
+  (declare-function org-number-sequence "org-compat" (from &optional to inc))
+  (declare-function org-remove-if-not "org" (predicate seq))
+  (declare-function org-every "org" (pred seq))
+  (add-to-list 'org-babel-tangle-lang-exts '("sas" . "sas"))
+  
+  (defconst org-babel-header-args:sas
+    '((width               . :any)
+      (height              . :any)
+      (bg                  . :any)
+      (units               . :any)
+      (pointsize           . :any)
+      (antialias           . :any)
+      (quality             . :any)
+      (compression         . :any)
+      (res                 . :any)
+      (type                . :any)
+      (family              . :any)
+      (title               . :any)
+      (fonts               . :any)
+      (version             . :any)
+      (paper               . :any)
+      (encoding            . :any)
+      (pagecentre          . :any)
+      (colormodel          . :any)
+      (useDingbats         . :any)
+      (horizontal          . :any)
+      (results             . ((file list vector table scalar verbatim)
+                              (raw org html latex code pp wrap)
+                              (replace silent append prepend)
+                              (output value graphics))))
+    "R-specific header arguments.")
+  
+  ;; Probably need to double check these
+  (defconst ob-sas-safe-header-args
+    (append org-babel-safe-header-args
+            '(:width :height :bg :units :pointsize :antialias :quality
+                     :compression :res :type :family :title :fonts
+                     :version :paper :encoding :pagecentre :colormodel
+                     :useDingbats :horizontal))
+    "Header args which are safe for SAS babel blocks.
+  
+  See `org-babel-safe-header-args' for documentation of the format of
+  this variable.")
+  
+  (defvar org-babel-default-header-args:sas '())
+  (put 'org-babel-default-header-args:sas 'safe-local-variable
+       (org-babel-header-args-safe-fn ob-sas-safe-header-args))
+  
+  (defcustom org-babel-sas-command "sas"
+    "Name of command to use for executing SAS code."
+    :group 'org-babel
+    :version "24.1"
+    :type 'string)
+  
+  (defvar ess-local-process-name) ; dynamically scoped
+  (defun org-babel-edit-prep:sas (info)
+    (let ((session (cdr (assoc :session (nth 2 info)))))
+      (when (and session (string-match "^\\*\\(.+?\\)\\*$" session))
+        (save-match-data (org-babel-sas-initiate-session session nil)))))
+  
+  (defun org-babel-expand-body:sas (body params &optional graphics-file)
+    "Expand BODY according to PARAMS, return the expanded body."
+    (let ((graphics-file
+           (or graphics-file (org-babel-graphical-output-file params))))
+      (mapconcat #'identity
+                 (append
+                  (when (cdr (assoc :prologue params))
+                    (list (cdr (assoc :prologue params))))
+                  (org-babel-variable-assignments:sas params)
+                  (list body)
+                  (when (cdr (assoc :epilogue params))
+                    (list (cdr (assoc :epilogue params)))))
+                 "\n")))
+  
+  (defun org-babel-execute:sas (body params)
+    "Execute a block of SAS code.
+  This function is called by `org-babel-execute-src-block'."
+    (save-excursion
+      (let* ((result-params (cdr (assoc :result-params params)))
+             (result-type (cdr (assoc :result-type params)))
+             (session (org-babel-sas-initiate-session
+                       (cdr (assoc :session params)) params))
+             (colnames-p (cdr (assoc :colnames params)))
+             (rownames-p (cdr (assoc :rownames params)))
+             (graphics-file (org-babel-graphical-output-file params))
+             (full-body
+              (let ((inside
+                     (list (org-babel-expand-body:sas body params graphics-file))))
+                (mapconcat #'identity
+                           (if graphics-file
+                               (append
+                                (list (org-babel-sas-construct-graphics-device-call
+                                       graphics-file params))
+                                inside
+                                (list "},error=function(e){plot(x=-1:1, y=-1:1, type='n', xlab='', ylab='', axes=FALSE); text(x=0, y=0, labels=e$message, col='red'); paste('ERROR', e$message, sep=' : ')}); dev.off()"))
+                             inside)
+                           "\n")))
+             (result
+              (org-babel-sas-evaluate
+               session full-body result-type result-params
+               (or (equal "yes" colnames-p)
+                   (org-babel-pick-name
+                    (cdr (assoc :colname-names params)) colnames-p))
+               (or (equal "yes" rownames-p)
+                   (org-babel-pick-name
+                    (cdr (assoc :rowname-names params)) rownames-p)))))
+        (if graphics-file nil result)))
+  
+    (defun org-babel-prep-session:sas (session params)
+      "Prepare SESSION according to the header arguments specified in PARAMS."
+      (let* ((session (org-babel-sas-initiate-session session params))
+             (var-lines (org-babel-variable-assignments:sas params)))
+        (org-babel-comint-in-buffer session
+          (mapc (lambda (var)
+                  (end-of-line 1) (insert var) (comint-send-input nil t)
+                  (org-babel-comint-wait-for-output session)) var-lines))
+        session))
+  
+    (defun org-babel-load-session:sas (session body params)
+      "Load BODY into SESSION."
+      (save-window-excursion
+        (let ((buffer (org-babel-prep-session:sas session params)))
+          (with-current-buffer buffer
+            (goto-char (process-mark (get-buffer-process (current-buffer))))
+            (insert (org-babel-chomp body)))
+          buffer))))
+  
+  ;; helper functions
+  
+  (defun org-babel-variable-assignments:sas (params)
+    "Return list of SAS statements assigning the block's variables."
+    (let ((vars (mapcar #'cdr (org-babel-get-header params :var))))
+      (mapcar
+       (lambda (pair)
+         (org-babel-sas-assign-elisp
+          (car pair) (cdr pair)
+          (equal "yes" (cdr (assoc :colnames params)))
+          (equal "yes" (cdr (assoc :rownames params)))))
+       (mapcar
+        (lambda (i)
+          (cons (car (nth i vars))
+                (org-babel-reassemble-table
+                 (cdr (nth i vars))
+                 (cdr (nth i (cdr (assoc :colname-names params))))
+                 (cdr (nth i (cdr (assoc :rowname-names params)))))))
+        (org-number-sequence 0 (1- (length vars)))))))
+  
+  (defun org-babel-sas-quote-tsv-field (s)
+    "Quote field S for export to SAS."
+    (if (stringp s)
+        (concat "\"" (mapconcat 'identity (split-string s "\"") "\"\"") "\"")
+      (format "%S" s)))
+  
+  (defun org-babel-sas-assign-elisp (name value colnames-p rownames-p)
+    "Construct SAS code assigning the elisp VALUE to a variable named NAME."
+    (if (listp value)
+        (let ((max (apply #'max (mapcar #'length (org-remove-if-not
+                                                  #'sequencep value))))
+              (min (apply #'min (mapcar #'length (org-remove-if-not
+                                                  #'sequencep value))))
+              (transition-file (org-babel-temp-file "sas-import-")))
+          ;; ensure VALUE has an orgtbl structure (depth of at least 2)
+          (unless (listp (car value)) (setq value (list value)))
+          (with-temp-file transition-file
+            (insert
+             (orgtbl-to-tsv value '(:fmt org-babel-sas-quote-tsv-field))
+             "\n"))
+          (let ((file (org-babel-process-file-name transition-file 'noquote))
+                (header (if (or (eq (nth 1 value) 'hline) colnames-p)
+                            "TRUE" "FALSE"))
+                (row-names (if rownames-p "1" "NULL")))
+            (if (= max min)
+                (format "%s <- read.table(\"%s\",
+                        header=%s,
+                        row.names=%s,
+                        sep=\"\\t\",
+                        as.is=TRUE)" name file header row-names)
+              (format "%s <- read.table(\"%s\",
+                     header=%s,
+                     row.names=%s,
+                     sep=\"\\t\",
+                     as.is=TRUE,
+                     fill=TRUE,
+                     col.names = paste(\"V\", seq_len(%d), sep =\"\"))"
+                      name file header row-names max))))
+      (format "%s <- %s" name (org-babel-sas-quote-tsv-field value))))
+  
+  (defvar ess-ask-for-ess-directory) ; dynamically scoped
+  (defun org-babel-sas-initiate-session (session params)
+    "If there is not a current SAS process then create one."
+    (unless (string= session "none")
+      (let ((session (or session "*SAS*"))
+            (ess-ask-for-ess-directory
+             (and (and (boundp 'ess-ask-for-ess-directory) ess-ask-for-ess-directory)
+                  (not (cdr (assoc :dir params))))))
+        (if (org-babel-comint-buffer-livep session)
+            session
+          (save-window-excursion
+            (when (get-buffer session)
+              ;; Session buffer exists, but with dead process
+              (set-buffer session))
+            (require 'ess) (SAS)
+            (rename-buffer
+             (if (bufferp session)
+                 (buffer-name session)
+               (if (stringp session)
+                   session
+                 (buffer-name))))
+            (current-buffer))))))
+  
+  (defun org-babel-sas-associate-session (session)
+    "Associate SAS code buffer with an SAS session.
+  Make SESSION be the inferior ESS process associated with the
+  current code buffer."
+    (setq ess-local-process-name
+          (process-name (get-buffer-process session)))
+    (ess-make-buffer-current))
+  
+  (defvar org-babel-sas-graphics-devices
+    '((:bmp "bmp" "filename")
+      (:jpg "jpeg" "filename")
+      (:jpeg "jpeg" "filename")
+      (:tikz "tikz" "file")
+      (:tiff "tiff" "filename")
+      (:png "png" "filename")
+      (:svg "svg" "file")
+      (:pdf "pdf" "file")
+      (:ps "postscript" "file")
+      (:postscript "postscript" "file"))
+    "An alist mapping graphics file types to SAS functions.
+  
+  Each member of this list is a list with three members:
+  1. the file extension of the graphics file, as an elisp :keyword
+  2. the R graphics device function to call to generate such a file
+  3. the name of the argument to this function which specifies the
+     file to write to (typically \"file\" or \"filename\")")
+  
+  (defun org-babel-sas-construct-graphics-device-call (out-file params)
+    "Construct the call to the graphics device."
+    (let* ((allowed-args '(:width :height :bg :units :pointsize
+                                  :antialias :quality :compression :res
+                                  :type :family :title :fonts :version
+                                  :paper :encoding :pagecentre :colormodel
+                                  :useDingbats :horizontal))
+           (device (and (string-match ".+\\.\\([^.]+\\)" out-file)
+                        (match-string 1 out-file)))
+           (device-info (or (assq (intern (concat ":" device))
+                                  org-babel-sas-graphics-devices)
+                            (assq :png org-babel-sas-graphics-devices)))
+          (extra-args (cdr (assq :sas-dev-args params))) filearg args)
+      (setq device (nth 1 device-info))
+      (setq filearg (nth 2 device-info))
+      (setq args (mapconcat
+                  (lambda (pair)
+                    (if (member (car pair) allowed-args)
+                        (format ",%s=%S"
+                                (substring (symbol-name (car pair)) 1)
+                                (cdr pair)) ""))
+                  params ""))
+      (format "%s(%s=\"%s\"%s%s%s); tryCatch({"
+              device filearg out-file args
+              (if extra-args "," "") (or extra-args ""))))
+  
+  (defvar org-babel-sas-eoe-indicator "'org_babel_R_eoe'")
+  (defvar org-babel-sas-eoe-output "[1] \"org_babel_R_eoe\"")
+  
+  (defvar org-babel-sas-write-object-command "{function(object,transfer.file){object;invisible(if(inherits(try({tfile<-tempfile();write.table(object,file=tfile,sep=\"\\t\",na=\"nil\",row.names=%s,col.names=%s,quote=FALSE);file.rename(tfile,transfer.file)},silent=TRUE),\"try-error\")){if(!file.exists(transfer.file))file.create(transfer.file)})}}(object=%s,transfer.file=\"%s\")")
+  
+  (defun org-babel-sas-evaluate
+    (session body result-type result-params column-names-p row-names-p)
+    "Evaluate SAS code in BODY."
+    (if session
+        (org-babel-sas-evaluate-session
+         session body result-type result-params column-names-p row-names-p)
+      (org-babel-sas-evaluate-external-process
+       body result-type result-params column-names-p row-names-p)))
+  
+  (defun org-babel-sas-evaluate-external-process
+    (body result-type result-params column-names-p row-names-p)
+    "Evaluate BODY in external SAS process.
+  If RESULT-TYPE equals 'output then return standard output as a
+  string.  If RESULT-TYPE equals 'value then return the value of the
+  last statement in BODY, as elisp."
+    (case result-type
+      (value
+       (let ((tmp-file (org-babel-temp-file "R-")))
+         (org-babel-eval org-babel-sas-command
+                         (format org-babel-sas-write-object-command
+                                 (if row-names-p "TRUE" "FALSE")
+                                 (if column-names-p
+                                     (if row-names-p "NA" "TRUE")
+                                   "FALSE")
+                                 (format "{function ()\n{\n%s\n}}()" body)
+                                 (org-babel-process-file-name tmp-file 'noquote)))
+         (org-babel-sas-process-value-result
+          (org-babel-result-cond result-params
+            (with-temp-buffer
+              (insert-file-contents tmp-file)
+              (buffer-string))
+            (org-babel-import-elisp-from-file tmp-file '(16)))
+          column-names-p)))
+      (output (org-babel-eval org-babel-sas-command body))))
+  
+  (defvar ess-eval-visibly-p)
+  
+  (defun org-babel-sas-evaluate-session
+    (session body result-type result-params column-names-p row-names-p)
+    "Evaluate BODY in SESSION.
+  If RESULT-TYPE equals 'output then return standard output as a
+  string.  If RESULT-TYPE equals 'value then return the value of the
+  last statement in BODY, as elisp."
+    (case result-type
+      (value
+       (with-temp-buffer
+         (insert (org-babel-chomp body))
+         (let ((ess-local-process-name
+                (process-name (get-buffer-process session)))
+               (ess-eval-visibly-p nil))
+           (ess-eval-buffer nil)))
+       (let ((tmp-file (org-babel-temp-file "sas-")))
+         (org-babel-comint-eval-invisibly-and-wait-for-file
+          session tmp-file
+          (format org-babel-sas-write-object-command
+                  (if row-names-p "TRUE" "FALSE")
+                  (if column-names-p
+                      (if row-names-p "NA" "TRUE")
+                    "FALSE")
+                  ".Last.value" (org-babel-process-file-name tmp-file 'noquote)))
+         (org-babel-sas-process-value-result
+          (org-babel-result-cond result-params
+            (with-temp-buffer
+              (insert-file-contents tmp-file)
+              (buffer-string))
+            (org-babel-import-elisp-from-file tmp-file '(16)))
+          column-names-p)))
+      (output
+       (mapconcat
+        #'org-babel-chomp
+        (butlast
+         (delq nil
+               (mapcar
+                (lambda (line) (when (> (length line) 0) line))
+                (mapcar
+                 (lambda (line) ;; cleanup extra prompts left in output
+                   (if (string-match
+                        "^\\([ ]*[>+\\.][ ]?\\)+\\([[0-9]+\\|[ ]\\)" line)
+                       (substring line (match-end 1))
+                     line))
+                 (org-babel-comint-with-output (session org-babel-sas-eoe-output)
+                   (insert (mapconcat #'org-babel-chomp
+                                      (list body org-babel-sas-eoe-indicator)
+                                      "\n"))
+                   (inferior-ess-send-input)))))) "\n"))))
+  
+  (defun org-babel-sas-process-value-result (result column-names-p)
+    "R-specific processing of return value.
+  Insert hline if column names in output have been requested."
+    (if column-names-p
+        (cons (car result) (cons 'hline (cdr result)))
+      result))
+  
+  (provide 'ob-sas)
+  
+  ;;; ob-sas.el ends here
+#+END_SRC

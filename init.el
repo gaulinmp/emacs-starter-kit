@@ -46,14 +46,14 @@
 ;; Set default font. First one found is selected.
 (cond
  ((eq window-system nil) nil)
+ ((font-existsp "Consolas")
+  (set-face-attribute 'default nil :height 121 :font "Consolas"))
  ((font-existsp "PragmataPro")
   (set-face-attribute 'default nil :height 111 :font "PragmataPro"))
   ((font-existsp "Source Code Pro")
   (set-face-attribute 'default nil :height 121 :font "Source Code Pro"))
  ((font-existsp "Menlo")
   (set-face-attribute 'default nil :height 121 :font "Menlo"))
- ((font-existsp "Consolas")
-  (set-face-attribute 'default nil :height 121 :font "Consolas"))
  ((font-existsp "Inconsolata")
   (set-face-attribute 'default nil :height 121 :font "Inconsolata"))
    ((font-existsp "Envy Code R")
@@ -68,3 +68,6 @@
 (org-babel-load-file (expand-file-name "starter-kit.org" dotfiles-dir))
 
 ;;; init.el ends here
+(put 'upcase-region 'disabled nil)
+(put 'downcase-region 'disabled nil)
+(put 'erase-buffer 'disabled nil)
