@@ -629,13 +629,3 @@ Some last tweaks.
  (menu-bar-mode 1)
 #+END_SRC
    
-** CSV Mode
-#+BEGIN_SRC emacs-lisp
-(require 'csv-mode)
-(defun csv-mode-force () "Edit comma-separated text file." (interactive)
-  (if (featurep 'csv-mode) (unload-feature 'csv-mode))(csv-mode)) ; in case space-mode has already been called
-(defun space-mode () "Edit space-separated text file." (interactive)
-  (setq csv-separators '(" "))(csv-mode)) ; csv-separators must be set before loading csv-mode
-(defun tab-mode () "Edit tab-separated text file." (interactive)
-  (setq csv-separators '("\t"))(csv-mode)) ; csv-separators must be set before loading csv-mode
-#+END_SRC
