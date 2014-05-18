@@ -37,6 +37,7 @@ The following packages will be downloaded and installed.
                                 'ruby-mode
                                 's
                                 'smex
+                                'monokai-theme
                                 'solarized-theme
                                 'tango-2-theme
                                 'textmate
