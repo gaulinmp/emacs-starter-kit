@@ -462,7 +462,7 @@ Located in [[file:starter-kit-perl.org][starter-kit-perl]]
 *** Starter Kit Python
 Located in [[file:starter-kit-python.org][starter-kit-python]]
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp tangle:no
 (starter-kit-load "starter-kit-python.org")
 #+end_src
 
@@ -475,7 +475,7 @@ Located in [[file:starter-kit-haskell.org][starter-kit-haskell]]
 *** Starter Kit Latex
 Located in [[file:starter-kit-latex.org][starter-kit-latex]]
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp tangle:no
 (starter-kit-load "starter-kit-latex.org")
 #+end_src
 
