@@ -1,0 +1,30 @@
+#+TITLE: Starter Kit Haskell
+#+OPTIONS: toc:nil num:nil ^:nil
+
+This is part of the [[file:starter-kit.org][Emacs Starter Kit]].
+
+* Starter kit Haskell
+
+Support for the Haskell programming language.
+
+** Haskell Mode
+Included with haskell-mode but may need to be loaded manually.
+#+begin_src emacs-lisp
+
+(require 'haskell-mode)
+
+(add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
+  
+; Indentation modes
+;;(add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
+(add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
+;;(add-hook 'haskell-mode-hook 'turn-on-haskell-simple-indent)
+  
+; Unicode support
+(setq haskell-font-lock-symbols t)
+
+; Inferior mode
+(require 'inf-haskell)
+      
+#+end_src
+
