@@ -81,7 +81,7 @@ This file provides settings for ESS and R.
               (setq w1 (selected-window))
               (setq w1name (buffer-name))
               (setq w2 (split-window w1 nil t))
-              (R)
+              (ess-sas-interactive)
               (set-window-buffer w2 "*iESS[SAS]*")
               (set-window-buffer w1 w1name))))
     
@@ -94,7 +94,7 @@ This file provides settings for ESS and R.
               (setq w1 (selected-window))
               (setq w1name (buffer-name))
               (setq w2 (split-window w1 nil t))
-              (R)
+              (stata)
               (set-window-buffer w2 "*stata*")
               (set-window-buffer w1 w1name))))
     
