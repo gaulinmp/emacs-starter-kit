@@ -83,49 +83,28 @@ This file provides settings for ESS and R.
     ;; SAS Stuff
         (defun my-ess-start-SAS ()
           (interactive)
-            (if (not (member "*SAS*" (mapcar (function buffer-name) (buffer-list))))
+            (if (not (member "*iESS[SAS]*" (mapcar (function buffer-name) (buffer-list))))
               (progn
-            (SAS)
-            (other-window -1)
-            (ess-sas-3window))))
-    
-        (defun ess-sas-3window ()
-        "Put running SAS buffers into three windows in one frame.
-        Place the cursor in a myfile.sas buffer. Run SAS with M-x SAS,
-        Return the cursor to the myfile.sas buffer,
-        then enter C-c 3 to put myfile.sas in the upperleft window,
-        ,*SAS.log* in the upperright window, and *SAS.lst* buffers in
-        the bottom window. The *SAS* buffer remains buried."
-        (interactive)
-        (delete-other-windows)
-        (setq w1 (selected-window))
-        (setq w2 (split-window-horizontally))
-        (other-window 1)
-        (set-window-buffer w2 "*SAS.log*")
-        (setq w3 (split-window-vertically))
-        (set-window-buffer w3 "*SAS*")
-        (other-window -1)
-        )
+              (delete-other-windows)
+              (setq w1 (selected-window))
+              (setq w1name (buffer-name))
+              (setq w2 (split-window w1 nil t))
+              (R)
+              (set-window-buffer w2 "*iESS[SAS]*")
+              (set-window-buffer w1 w1name))))
     
     ;; STATA Stuff
         (defun my-ess-start-STATA ()
           (interactive)
             (if (not (member "*stata*" (mapcar (function buffer-name) (buffer-list))))
               (progn
-            (stata)
-            (other-window -1)
-            (ess-stata-2window))))
-    
-        (defun ess-stata-2window ()
-         (interactive)
-          (delete-other-windows)
-          (setq w1 (selected-window))
-          (setq w2 (split-window-horizontally))
-          (other-window 1)
-          (set-window-buffer w2 "*stata*")
-          (other-window -1)
-         )
-    
+              (delete-other-windows)
+              (setq w1 (selected-window))
+              (setq w1name (buffer-name))
+              (setq w2 (split-window w1 nil t))
+              (R)
+              (set-window-buffer w2 "*stata*")
+              (set-window-buffer w1 w1name))))
     
     ;; ESS Stuff
         (defun my-ess-eval ()
@@ -133,14 +112,9 @@ This file provides settings for ESS and R.
           (if (equal ess-language "R")
             (my-ess-start-R)) ; Launch R
           (if (equal ess-language "SAS")
-            (progn 
-            (my-ess-start-SAS) ; Launch SAS
-            (ess-sas-3window))
-          )
+            (my-ess-start-SAS)) ; Launch SAS
           (if (equal ess-language "STA")
-            (progn 
-            (my-ess-start-STATA) ; Launch STATA
-            (ess-stata-2window))
+            (my-ess-start-STATA)) ; Launch STATA
           )
   
           (if (and transient-mark-mode mark-active)
