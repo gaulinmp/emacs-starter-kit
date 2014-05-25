@@ -72,6 +72,7 @@ This file provides settings for ESS and R.
             (set-window-buffer w1 w1name))
     
     ;; SAS Stuff
+      (setq ess-sas-submit-command-options "-rsasuser -noovp -linesize 80 -nosyntaxcheck")
         (defun my-ess-start-SAS ()
           (interactive)
             (delete-other-windows)
@@ -94,7 +95,7 @@ This file provides settings for ESS and R.
               (stata))
             (set-window-buffer w2 "*stata*")
             (set-window-buffer w1 w1name))
-
+  
     ;; ESS Stuff
         (defun my-ess-eval ()
           (interactive)
