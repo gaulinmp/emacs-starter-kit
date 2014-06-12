@@ -462,10 +462,15 @@ Located in [[file:starter-kit-perl.org][starter-kit-perl]]
 *** Starter Kit Python
 Located in [[file:starter-kit-python.org][starter-kit-python]]
 
-#+begin_src emacs-lisp tangle:no
+#+begin_src emacs-lisp tangle:yes
 (starter-kit-load "starter-kit-python.org")
 #+end_src
+*** Starter Kit SQL
+Located in [[file:starter-kit-sql.org][starter-kit-sql]]
 
+#+begin_src emacs-lisp tangle:yes
+(starter-kit-load "starter-kit-sql.org")
+#+end_src
 *** Starter Kit Haskell
 Located in [[file:starter-kit-haskell.org][starter-kit-haskell]]
 
