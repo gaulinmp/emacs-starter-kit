@@ -230,6 +230,9 @@ This section contains all code implementing the Emacs Starter Kit.
 
 #+srcname: starter-kit-load-paths
 #+begin_src emacs-lisp 
+  (require 'tramp)
+  ; add remote paths as well
+  (add-to-list 'tramp-remote-path 'tramp-own-remote-path)
   (setq dotfiles-dir (file-name-directory
                       (or load-file-name (buffer-file-name))))
   
