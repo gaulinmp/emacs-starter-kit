@@ -72,7 +72,7 @@ This file provides settings for ESS and R.
             (set-window-buffer w1 w1name))
     
     ;; SAS Stuff
-      (setq ess-sas-submit-command-options "-rsasuser -noovp -nosyntaxcheck")
+      (setq-default ess-sas-submit-command-options "-rsasuser -noovp -nosyntaxcheck")
         (defun my-ess-start-SAS ()
           (interactive)
             (delete-other-windows)
