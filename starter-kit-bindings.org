@@ -99,8 +99,8 @@ Building regular expressions in Emacs is kind of a pain.  The visual-regexp paca
 #+begin_src emacs-lisp 
 ;(windmove-default-keybindings) 
 
-(global-set-key (kbd "s-<left>")  'windmove-left)
-(global-set-key (kbd "s-<right>") 'windmove-right)
+(global-set-key (kbd "H-<left>")  'windmove-left)
+(global-set-key (kbd "H-<right>") 'windmove-right)
 (global-set-key (kbd "s-<up>")    'windmove-up)
 (global-set-key (kbd "s-<down>")  'windmove-down)
 
