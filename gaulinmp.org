@@ -1,7 +1,7 @@
 #+TITLE: Local User Customizations
 #+OPTIONS: toc:nil num:nil ^:nil
 
-* Starter Kit eddyhu
+* Starter Kit gaulinmp
 This file contains very local customizations---ones that in some cases
 you will not be able to just drop in and use because, e.g., they
 involve references to particular files on my own machine. It's
@@ -17,12 +17,12 @@ To use the customizations here yourself, /you must change the name of
  user-login-name [RET]=. For example, on my system =user-login-name=
  is 'kjhealy', so this file is named =kjhealy.org=, and when Emacs
  starts up with the starter kit it creates the file =kjhealy.el=.
- 
+
 You will also need to change the values for the location of bibtex
  databases, pandoc and orgmode-mobile specified below, and some other
  settings. *Search for 'kjhealy' in this file* to find the paths that
  need to be updated. Change them as needed or delete them if you don't
- need these features. 
+ need these features.
 
 Finally, the [[*Local%20Org-mode%20XeLaTeX%20Export%20Settings][Local Org-mode XeLaTeX Export Settings]] section below has
  references to fonts that you may not have available on your
@@ -37,7 +37,7 @@ as turning off the sans-serif heading style that AucTeX defaults to.
 
 #+srcname: local-settings
 #+begin_src emacs-lisp
-  (add-hook 'latex-mode-hook 
+  (add-hook 'latex-mode-hook
             (lambda ()
               (set-face-attribute 'font-latex-sectioning-5-face nil :inherit nil :foreground "#b58900")
               (set-face-attribute 'font-latex-sectioning-0-face nil :height 3)
@@ -45,8 +45,8 @@ as turning off the sans-serif heading style that AucTeX defaults to.
               (set-face-attribute 'font-latex-sectioning-2-face nil :height 1.5)
               (set-face-attribute 'font-latex-sectioning-3-face nil :height 1.2)
               (set-face-attribute 'font-latex-sectioning-4-face nil :height 1.0)))
-  
-   (add-hook 'org-mode-hook 
+
+   (add-hook 'org-mode-hook
              (lambda ()
                (set-face-attribute 'org-level-1 nil :height 1.5)
                (set-face-attribute 'org-level-2 nil :height 1.2)
@@ -59,42 +59,17 @@ as turning off the sans-serif heading style that AucTeX defaults to.
   I find it very useful to run Emacs in full-screen mode. There is no
     completely satisfactory way to accomplish this on Mac OS X. What
     works depends on the flavor of emacs you are using,
-    unfortunately. Choose as appropriate from the following options. Enable one of them by changing the value of =:tangle= to =yes=. 
+    unfortunately. Choose as appropriate from the following options. Enable one of them by changing the value of =:tangle= to =yes=.
 
 **** Option 1
 Just maximize the frame. Not true fullscreen
 
 #+srcname: fullscreen-1
 #+begin_src emacs-lisp :tangle no
-  (global-set-key (kbd "C-c m") 'maximize-frame)  
+  (global-set-key (kbd "C-c m") 'maximize-frame)
 #+end_src
 
 **** Option 2
-Fullscreen toggle -- Only works with the (out-of-date)
-patched emacs build at =git://github.com/typester/emacs.git=.
-
-#+source: fullscreen-2
-#+begin_src emacs-lisp :tangle no
-  (global-set-key (kbd "C-c m") 'ns-toggle-fullscreen)
-#+end_src
-
-**** Option 3  
-Fullscreen toggle using maxframe.el. 
-#+source: fullscreen-3
-#+begin_src emacs-lisp :tangle no
-  
- (require 'maxframe)
- (defvar my-fullscreen-p t "Check if fullscreen is on or off")
- (defun my-toggle-fullscreen ()
- (interactive)
- (setq my-fullscreen-p (not my-fullscreen-p))
- (if my-fullscreen-p
- (restore-frame)
- (maximize-frame)))
- (global-set-key (kbd "C-c f") 'my-toggle-fullscreen)    
-#+end_src
-
-**** Option 4
 For use with Yamamoto Mitsuharu's Carbon-patched Emacs. (This is
     what I use, but it requires you compile a custom version of Emacs provided by Mitsuharu.)
 
@@ -132,7 +107,7 @@ Dired extensions
 #+end_src
 
 *** Dired open multiple files
-In dired mode, visit all marked files using. Bound to the "F" key. 
+In dired mode, visit all marked files using. Bound to the "F" key.
 #+source: dired-F
 #+begin_src emacs-lisp
   (eval-after-load "dired"
@@ -150,7 +125,7 @@ In dired mode, visit all marked files using. Bound to the "F" key.
 #+begin_src emacs-lisp
 (require 'stripe-buffer)
 (add-hook 'org-mode-hook 'org-table-stripes-enable)
-(add-hook 'dired-mode-hook 'stripe-listify-buffer)  
+(add-hook 'dired-mode-hook 'stripe-listify-buffer)
 #+end_src
 
 ** Local LaTeX settings
@@ -175,16 +150,16 @@ Set up AUCTeX to work with the Skim PDF viewer.
     '("^pdf$" "."
      "/Applications/Skim.app/Contents/SharedSupport/displayline %n %o %b")))
      )
-    
+
   (setq TeX-view-program-selection '((output-pdf "PDF Viewer")))
   (setq TeX-view-program-list
        '(("PDF Viewer" "/Applications/Skim.app/Contents/SharedSupport/displayline -b -g %n %o %b")))
-  
+
   (server-start); start emacs in server mode so that skim can talk to it
-    
+
     ;; Make emacs aware of multi-file projects
     ;; (setq-default TeX-master nil)
-    
+
     ;; Auto-raise Emacs on activation (from Skim, usually)
     (defun raise-emacs-on-aqua()
     (shell-command "osascript -e 'tell application \"Emacs\" to activate' &"))
@@ -192,10 +167,10 @@ Set up AUCTeX to work with the Skim PDF viewer.
 #+end_src
 
 *** Local RefTeX Settings
-Tell RefTeX where the bibliography files are. 
+Tell RefTeX where the bibliography files are.
 
 #+srcname: local-reftex
-#+begin_src emacs-lisp    
+#+begin_src emacs-lisp
     ;; Make RefTex able to find my local bib files
     (setq reftex-bibpath-environment-variables
     '("~/texmf/bibtex/bib"))
@@ -248,10 +223,10 @@ Tell RefTeX where the bibliography files are.
 
 #+end_src
 
-** Local Pandoc/GFM Support 
-A pandoc/gfm menu for markdown and tex files. 
+** Local Pandoc/GFM Support
+A pandoc/gfm menu for markdown and tex files.
 #+src-name: pandoc_mode
-#+begin_src emacs-lisp 
+#+begin_src emacs-lisp
   (load "pandoc-mode")
   (add-hook 'markdown-mode-hook 'turn-on-pandoc)
   (add-hook 'TeX-mode-hook 'turn-on-pandoc)
@@ -264,7 +239,7 @@ A pandoc/gfm menu for markdown and tex files.
    elsewhere in the starter kit. Add local configuration here, e.g.,
    display categories.
 #+srcname: iBuffer-custom
-#+begin_src emacs-lisp 
+#+begin_src emacs-lisp
   (setq ibuffer-saved-filter-groups
       '(("home"
 	 ("emacs-config" (or (filename . ".emacs.d")
@@ -280,12 +255,12 @@ A pandoc/gfm menu for markdown and tex files.
 		     (name . "\*Apropos\*")
 		     (name . "\*info\*"))))))
 
-        (add-hook 'ibuffer-mode-hook 
+        (add-hook 'ibuffer-mode-hook
 	             '(lambda ()
 	             (ibuffer-switch-to-saved-filter-groups "home")))
-       (setq ibuffer-show-empty-filter-groups nil)                     
+       (setq ibuffer-show-empty-filter-groups nil)
        (setq ibuffer-expert t)
-       (add-hook 'ibuffer-mode-hook 
+       (add-hook 'ibuffer-mode-hook
        '(lambda ()
        (ibuffer-auto-mode 1)
        (ibuffer-switch-to-saved-filter-groups "home")))
@@ -293,45 +268,23 @@ A pandoc/gfm menu for markdown and tex files.
 
 ** Local Org-mode Settings
 *** Smart-quote binding
-When in an org-mode buffer, bind TeX-insert-quote to =C-c "=. Turned off by default. 
+When in an org-mode buffer, bind TeX-insert-quote to =C-c "=. Turned off by default.
 
 #+source: org-mode-smartquote-key
 #+begin_src emacs-lisp :tangle no
   (add-hook 'org-mode-hook 'smart-quote-keys)
-  
+
   (defun smart-quote-keys ()
     (require 'typopunct)
     (typopunct-change-language 'english)
     (local-set-key (kbd "C-c \'") 'typopunct-insert-single-quotation-mark)
     (local-set-key (kbd "C-c \"") 'typopunct-insert-quotation-mark)
     )
-    
-  
-  
-#+end_src
 
-*** Archive Settings
-    Where archived projects and tasks go.
-#+source: orgmode-archive
-#+begin_src emacs-lisp
-  (setq org-archive-location "~/Dropbox/Org/archive.org::From %s")
-#+end_src
 
-*** Mobile Settings
-   Sync orgmode files with Dropbox and iPhone. 
-#+src-name: orgmode-mobile
-#+begin_src emacs-lisp
-   ;; Set to the location of your Org files on your local system
-   (setq org-directory "~/Dropbox/Org")
-   ;; Set to <your Dropbox root directory>/MobileOrg.
-   (setq org-mobile-directory "~/Dropbox/MobileOrg")
-   ;; Set to the files (or directory of files) you want sync'd
-   (setq org-agenda-files (quote ("~/Dropbox/Org")))
-   ;; Set to the name of the file where new notes will be stored
-   (setq org-mobile-inbox-for-pull "~/Dropbox/Org/from-mobile.org")
-   
 
 #+end_src
+
 
 *** Babel Settings
    Configure org-mode so that when you edit source code in an indirect buffer (with C-c '), the buffer is opened in the current window. That way, your window organization isn't broken when switching.
@@ -349,14 +302,14 @@ When in an org-mode buffer, bind TeX-insert-quote to =C-c "=. Turned off by defa
 
 #+source: orgmode-xelatex-export
 #+begin_src emacs-lisp
-    (require 'org-latex)   
+    (require 'org-latex)
     ;; Choose either listings or minted for exporting source code blocks.
     ;; Using minted (as here) requires pygments be installed. To use the
     ;; default listings package instead, use
     ;; (setq org-export-latex-listings t)
     ;; and change references to "minted" below to "listings"
     (setq org-export-latex-listings 'minted)
-    
+
     ;; default settings for minted code blocks
     (setq org-export-latex-minted-options
           '(;("frame" "single")
@@ -364,12 +317,12 @@ When in an org-mode buffer, bind TeX-insert-quote to =C-c "=. Turned off by defa
             ("fontsize" "\\small")
             ))
   ;x; turn off the default toc behavior; deal with it properly in headers to files.
-  (defun org-export-latex-no-toc (depth)  
+  (defun org-export-latex-no-toc (depth)
       (when depth
         (format "%% Org-mode is exporting headings to %s levels.\n"
                 depth)))
   (setq org-export-latex-format-toc-function 'org-export-latex-no-toc)
-  
+
     (add-to-list 'org-export-latex-classes
                  '("memarticle"
                    "\\documentclass[11pt,oneside,article]{memoir}"
@@ -378,7 +331,7 @@ When in an org-mode buffer, bind TeX-insert-quote to =C-c "=. Turned off by defa
                     ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
                     ("\\paragraph{%s}" . "\\paragraph*{%s}")
                     ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
-    
+
     (add-to-list 'org-export-latex-classes
                  '("membook"
                    "\\documentclass[11pt,oneside]{memoir}"
@@ -386,15 +339,15 @@ When in an org-mode buffer, bind TeX-insert-quote to =C-c "=. Turned off by defa
                    ("\\section{%s}" . "\\section*{%s}")
                    ("\\subsection{%s}" . "\\subsection*{%s}")
                    ("\\subsubsection{%s}" . "\\subsubsection*{%s}")))
-    
+
     ;; Originally taken from Bruno Tavernier: http://thread.gmane.org/gmane.emacs.orgmode/31150/focus=31432
-    ;; but adapted to use latexmk 4.22 or higher.  
+    ;; but adapted to use latexmk 4.22 or higher.
     (defun my-auto-tex-cmd ()
       "When exporting from .org with latex, automatically run latex,
                        pdflatex, or xelatex as appropriate, using latexmk."
       (let ((texcmd)))
-      ;; default command: pdflatex 
-      (setq texcmd "latexmk -pdflatex='pdflatex -synctex=1 --shell-escape --' -pdf %f")        
+      ;; default command: pdflatex
+      (setq texcmd "latexmk -pdflatex='pdflatex -synctex=1 --shell-escape --' -pdf %f")
       ;; pdflatex -> .pdf
       (if (string-match "LATEX_CMD: pdflatex" (buffer-string))
           (setq texcmd "latexmk -pdflatex='pdflatex -synctex=1 --shell-escape' -pdf %f"))
@@ -403,9 +356,9 @@ When in an org-mode buffer, bind TeX-insert-quote to =C-c "=. Turned off by defa
           (setq texcmd "latexmk -pdflatex='xelatex -synctex=1 --shell-escape' -pdf %f"))
       ;; LaTeX compilation command
       (setq org-latex-to-pdf-process (list texcmd)))
-    
+
     (add-hook 'org-export-latex-after-initial-vars-hook 'my-auto-tex-cmd)
-    
+
     ;; Default packages included in /every/ tex file, latex, pdflatex or xelatex
     (setq org-export-latex-packages-alist
           '(("" "graphicx" t)
@@ -416,32 +369,32 @@ When in an org-mode buffer, bind TeX-insert-quote to =C-c "=. Turned off by defa
             ("" "amsthm" t)
             ("" "datetime" t)
             ("longnamesfirst" "natbib" t)
-            
+
             ))
-    
+
     ;; Custom packages
     (defun my-auto-tex-parameters ()
       "Automatically select the tex packages to include. See https://github.com/kjhealy/latex-custom-kjh for the support files included here."
       ;; default packages for ordinary latex or pdflatex export
       (setq org-export-latex-default-packages-alist
             '(("AUTO" "inputenc" t)
-              ("minted,minion" "org-preamble-pdflatex" t)))        
+              ("minted,minion" "org-preamble-pdflatex" t)))
       ;; Packages to include when xelatex is used
       (if (string-match "LATEX_CMD: xelatex" (buffer-string))
           (setq org-export-latex-default-packages-alist
                 '(("minted" "org-preamble-xelatex" t) ))))
-    
-    ;(add-hook 'org-export-latex-after-initial-vars-hook 'my-auto-tex-parameters)      
+
+    ;(add-hook 'org-export-latex-after-initial-vars-hook 'my-auto-tex-parameters)
 #+end_src
 
 *** ebib and citation settings
     ebib is a bibtex database manager that works inside emacs. It can
-    talk to org-mode. See [[http://orgmode.org/worg/org-tutorials/org-latex-export.html#sec-17_2][this Worg tutorial]] for details. 
+    talk to org-mode. See [[http://orgmode.org/worg/org-tutorials/org-latex-export.html#sec-17_2][this Worg tutorial]] for details.
 #+source: ebib-setup
 #+begin_src emacs-lisp
    (org-add-link-type "ebib" 'ebib)
-  
-   (org-add-link-type 
+
+   (org-add-link-type
      "cite" 'ebib
      (lambda (path desc format)
        (cond
@@ -450,8 +403,8 @@ When in an org-mode buffer, bind TeX-insert-quote to =C-c "=. Turned off by defa
                (format "\\cite{%s}" path)
                (format "\\cite[%s]{%s}" desc path)
                )))))
-  
-   (org-add-link-type 
+
+   (org-add-link-type
      "parencite" 'ebib
      (lambda (path desc format)
        (cond
@@ -460,8 +413,8 @@ When in an org-mode buffer, bind TeX-insert-quote to =C-c "=. Turned off by defa
                (format "\\parencite{%s}" path)
                (format "\\parencite[%s]{%s}" desc path)
   )))))
-  
-  (org-add-link-type 
+
+  (org-add-link-type
      "textcite" 'ebib
      (lambda (path desc format)
        (cond
@@ -470,8 +423,8 @@ When in an org-mode buffer, bind TeX-insert-quote to =C-c "=. Turned off by defa
                (format "\\textcite{%s}" path)
                (format "\\textcite[%s]{%s}" desc path)
   )))))
-  
-  (org-add-link-type 
+
+  (org-add-link-type
      "autocite" 'ebib
      (lambda (path desc format)
        (cond
@@ -480,8 +433,8 @@ When in an org-mode buffer, bind TeX-insert-quote to =C-c "=. Turned off by defa
                (format "\\autocite{%s}" path)
            (format "\\autocite[%s]{%s}" desc path)
   )))))
-  
-  (org-add-link-type 
+
+  (org-add-link-type
    "footcite" 'ebib
    (lambda (path desc format)
      (cond
@@ -490,8 +443,8 @@ When in an org-mode buffer, bind TeX-insert-quote to =C-c "=. Turned off by defa
            (format "\\footcite{%s}" path)
          (format "\\footcite[%s]{%s}" desc path)
          )))))
-  
-  (org-add-link-type 
+
+  (org-add-link-type
    "fullcite" 'ebib
    (lambda (path desc format)
      (cond
@@ -500,8 +453,8 @@ When in an org-mode buffer, bind TeX-insert-quote to =C-c "=. Turned off by defa
            (format "\\fullcite{%s}" path)
          (format "\\fullcite[%s]{%s}" desc path)
          )))))
-  
-  (org-add-link-type 
+
+  (org-add-link-type
    "citetitle" 'ebib
    (lambda (path desc format)
      (cond
@@ -510,8 +463,8 @@ When in an org-mode buffer, bind TeX-insert-quote to =C-c "=. Turned off by defa
            (format "\\citetitle{%s}" path)
          (format "\\citetitle[%s]{%s}" desc path)
          )))))
-  
-  (org-add-link-type 
+
+  (org-add-link-type
    "citetitles" 'ebib
    (lambda (path desc format)
      (cond
@@ -520,8 +473,8 @@ When in an org-mode buffer, bind TeX-insert-quote to =C-c "=. Turned off by defa
            (format "\\citetitles{%s}" path)
          (format "\\citetitles[%s]{%s}" desc path)
          )))))
-  
-  (org-add-link-type 
+
+  (org-add-link-type
      "headlessfullcite" 'ebib
      (lambda (path desc format)
        (cond
@@ -529,18 +482,18 @@ When in an org-mode buffer, bind TeX-insert-quote to =C-c "=. Turned off by defa
          (if (or (not desc) (equal 0 (search "headlessfullcite:" desc)))
                (format "\\headlessfullcite{%s}" path)
                (format "\\headlessfullcite[%s]{%s}" desc path)
-  )))))   
+  )))))
 #+end_src
 
 *** HTML export Settings
-Create =html= files form the =org= sources, to help with documentation. To set up org-mode for publishing projects to HTML you will need to change these settings, as they apply only to the Starter Kit. 
+Create =html= files form the =org= sources, to help with documentation. To set up org-mode for publishing projects to HTML you will need to change these settings, as they apply only to the Starter Kit.
 
 #+source: html-export-settings
 #+begin_src emacs-lisp
   (setq org-publish-project-alist
          '(("org"
             :base-directory "~/.emacs.d/"
-            :publishing-directory "~/Documents/websites/esk/"
+            :publishing-directory "~/Documents/"
             :auto-sitemap t
             :sitemap-filename "index.org"
             :sitemap-title "Emacs Starter Kit for the Social Sciences: Documentation"
@@ -549,14 +502,14 @@ Create =html= files form the =org= sources, to help with documentation. To set u
             :style "<link rel=\"stylesheet\"
                    href=\"http://kieranhealy.org/stylesheets/screen.css\"
                    type=\"text/css\"/>")))
-  
-    (setq org-export-html-style-extra "") 
+
+    (setq org-export-html-style-extra "")
     (setq org-export-html-postamble nil)
-  
+
 #+end_src
 
 ** IRC
-Sometimes useful for getting help on R or Emacs. 
+Sometimes useful for getting help on R or Emacs.
 #+source: rirc-configuration
 #+begin_src emacs-lisp
   ;; connect to irc on invocation but don't autojoin any channels
@@ -566,25 +519,25 @@ Sometimes useful for getting help on R or Emacs.
 #+end_src
 
 ** Final Custom elements
-Some last tweaks. 
+Some last tweaks.
 
 #+srcname: final-custom
 #+begin_src emacs-lisp
-  
+
   (setq initial-major-mode 'org-mode)
   ;; Line-spacing tweak (Optimized for PragmataPro)
   (setq-default line-spacing 5)
-  
+
   ;; minimize fringe
   (setq-default indicate-empty-lines nil)
-  
+
   ;; Add keybindings for commenting regions of text
   (global-set-key (kbd "C-c ;") 'comment-or-uncomment-region)
   (global-set-key (kbd "M-'") 'comment-or-uncomment-region)
-  
+
   ;; Base dir
   (cd "~/")
-  
+
   ;; custom variables kludge. Why can't I get these to work via setq?
   (custom-set-variables
   ;; custom-set-variables was added by Custom.
@@ -599,11 +552,11 @@ Some last tweaks.
   '(blink-cursor-mode nil)
   '(text-mode-hook (quote (text-mode-hook-identify)))
   )
-  
+
 #+end_src
 
 ** X-toolkit Lucid Customizations
-#+srcname: 
+#+srcname:
 #+BEGIN_SRC emacs-lisp
  (setq-default inhibit-startup-message 't
                initial-scratch-message 'nil
@@ -630,4 +583,4 @@ Some last tweaks.
  (scroll-bar-mode -1)
  (menu-bar-mode 1)
 #+END_SRC
-   
+
