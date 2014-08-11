@@ -1,0 +1,11 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: DATA;SET;
+# key: dataset
+# group: sas
+# condition: (string= ess-language "SAS")
+# binding: direct-keybinding
+# --
+DATA ${1:tmp};
+     SET ${2:$1};
+     $0
+RUN;QUIT;

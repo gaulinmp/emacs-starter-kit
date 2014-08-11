@@ -1,0 +1,10 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: PROC SQL
+# key: sql
+# group: sas
+# condition: (string= ess-language "SAS")
+# binding: direct-keybinding
+# --
+PROC SQL;*INOBS=10; 
+    $0
+QUIT;
