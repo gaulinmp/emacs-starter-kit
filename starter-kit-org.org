@@ -128,6 +128,7 @@ contains an up to date list of the currently supported languages.
      (js . t)
      (haskell . t)
      (clojure . t)
+     (sql . t)
      (ditaa . t)))
 #+end_src
 

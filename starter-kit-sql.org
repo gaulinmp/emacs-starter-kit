@@ -12,6 +12,7 @@ Support for SQL languages.
 #+BEGIN_SRC emacs-lisp
   
   (require 'sql)
+  (setq sql-buffer "*SQL*")
   
   (defun my-start-sql ()
       (interactive)
