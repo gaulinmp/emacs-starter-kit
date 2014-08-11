@@ -497,7 +497,18 @@ Located in [[file:starter-kit-haskell.org][starter-kit-haskell]]
 Located in [[file:starter-kit-latex.org][starter-kit-latex]]
 
 #+begin_src emacs-lisp tangle:no
-(starter-kit-load "starter-kit-latex.org")
+    ;; After fighting to get this working on Windows, I am giving up.
+    ; (starter-kit-load "starter-kit-latex.org")
+    (cond
+       ((string-equal system-type "darwin")
+            ;; Add OS X specific packages
+            (starter-kit-load "starter-kit-latex.org")
+        )
+       ((string-equal system-type "gnu/linux")
+            ;; Add OS X specific packages
+            (starter-kit-load "starter-kit-latex.org")
+        )
+    )
 #+end_src
 
 *** Starter Kit Stats

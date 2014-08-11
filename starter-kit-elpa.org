@@ -38,9 +38,9 @@ The following packages will be downloaded and installed.
                                 's
                                 'smex
                                 'monokai-theme
-                                'solarized-theme
-                                'tango-2-theme
-                                'textmate
+                                ; 'solarized-theme
+                                ; 'tango-2-theme
+                                ; 'textmate
                                 ;; 'typopunct
                                 'yaml-mode
                                 'yasnippet
@@ -48,9 +48,25 @@ The following packages will be downloaded and installed.
                                 'auctex
                                 'ess
                                 'r-autoyas
-                                'haskell-mode
+                                ; 'haskell-mode
                                 )
     "Libraries that should be installed by default.")
+    ;; Platform specific adds
+    (cond
+       ((string-equal system-type "windows-nt")
+            ;; Add Windows specific packages
+            (add-to-list 'starter-kit-packages 'minimap)
+            )
+       ((string-equal system-type "darwin")
+            ;; Add OS X specific packages
+            (add-to-list 'starter-kit-packages
+                                'mac-key-mode
+                                'textmate)
+        )
+    )
+
+    ;; (add-to-list 'starter-kit-packages
+    ;;          'minimap)
 #+end_src
 
 #+begin_src emacs-lisp
@@ -90,7 +106,18 @@ On your first run, this should pull in all the base packages.
 Make sure the PATH variable is set properly. (Uses exec-path-from-shell package.)
 #+source: fix-path
 #+begin_src emacs-lisp
-(exec-path-from-shell-initialize)
+;; After fighting to get this working on Windows, I am giving up.
+;; (exec-path-from-shell-initialize)
+(cond
+   ((string-equal system-type "darwin")
+        ;; Add OS X specific packages
+        (exec-path-from-shell-initialize)
+    )
+   ((string-equal system-type "gnu/linux")
+        ;; Add Linux specific packages
+        (exec-path-from-shell-initialize)
+    )
+)
 #+end_src
 
 
