@@ -103,7 +103,10 @@ contains an up to date list of the currently supported languages.
      (ruby . t)
      (python . t)
      (js . t)
-     (haskell . t)))
+     (haskell . t)
+     (clojure . t)
+     (sql . t)
+     (ditaa . t)))
 #+end_src
 
 The next block makes org-babel aware that a lower-case 'r' in a =src= block header should be processed as R. 
