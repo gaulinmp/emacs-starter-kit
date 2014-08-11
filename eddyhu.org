@@ -580,6 +580,8 @@ Some last tweaks.
 
 #+srcname: final-custom
 #+begin_src emacs-lisp
+  
+  (setq initial-major-mode 'org-mode)
   ;; Line-spacing tweak (Optimized for PragmataPro)
   (setq-default line-spacing 5)
   
