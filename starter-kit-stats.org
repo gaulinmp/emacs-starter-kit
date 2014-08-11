@@ -138,6 +138,7 @@ This file provides settings for ESS and R.
 #+begin_src emacs_lisp :tangle no
   (require 'r-autoyas)
   (add hook 'ess-mode-hook 'r-autoyas-ess-activate)
+  (ess-toggle-underscore nil)
 #+end_src
 ** R-object tooltips
 Taken from http://blogisticreflections.wordpress.com/2009/10/01/r-object-tooltips-in-ess/
@@ -320,39 +321,15 @@ This is useful for when you have buffers with many similar names, as when there 
   (add-to-list 'org-babel-tangle-lang-exts '("sas" . "sas"))
   
   (defconst org-babel-header-args:sas
-    '((width               . :any)
-      (height              . :any)
-      (bg                  . :any)
-      (units               . :any)
-      (pointsize           . :any)
-      (antialias           . :any)
-      (quality             . :any)
-      (compression         . :any)
-      (res                 . :any)
-      (type                . :any)
-      (family              . :any)
-      (title               . :any)
-      (fonts               . :any)
-      (version             . :any)
-      (paper               . :any)
-      (encoding            . :any)
-      (pagecentre          . :any)
-      (colormodel          . :any)
-      (useDingbats         . :any)
-      (horizontal          . :any)
-      (results             . ((file list vector table scalar verbatim)
-                              (raw org html latex code pp wrap)
+    '((results             . ((file verbatim)
+                              (html code)
                               (replace silent append prepend)
                               (output value graphics))))
-    "R-specific header arguments.")
+    "SAS-specific header arguments.")
   
-  ;; Probably need to double check these
   (defconst ob-sas-safe-header-args
     (append org-babel-safe-header-args
-            '(:width :height :bg :units :pointsize :antialias :quality
-                     :compression :res :type :family :title :fonts
-                     :version :paper :encoding :pagecentre :colormodel
-                     :useDingbats :horizontal))
+            '())
     "Header args which are safe for SAS babel blocks.
   
   See `org-babel-safe-header-args' for documentation of the format of
@@ -408,19 +385,13 @@ This is useful for when you have buffers with many similar names, as when there 
                                 (list (org-babel-sas-construct-graphics-device-call
                                        graphics-file params))
                                 inside
-                                (list "},error=function(e){plot(x=-1:1, y=-1:1, type='n', xlab='', ylab='', axes=FALSE); text(x=0, y=0, labels=e$message, col='red'); paste('ERROR', e$message, sep=' : ')}); dev.off()"))
+                                (list ""))
                              inside)
                            "\n")))
              (result
               (org-babel-sas-evaluate
-               session full-body result-type result-params
-               (or (equal "yes" colnames-p)
-                   (org-babel-pick-name
-                    (cdr (assoc :colname-names params)) colnames-p))
-               (or (equal "yes" rownames-p)
-                   (org-babel-pick-name
-                    (cdr (assoc :rowname-names params)) rownames-p)))))
-        (if graphics-file nil result)))
+               session full-body result-type result-params)))
+        (if graphics-file nil result))))
   
     (defun org-babel-prep-session:sas (session params)
       "Prepare SESSION according to the header arguments specified in PARAMS."
@@ -599,7 +570,7 @@ This is useful for when you have buffers with many similar names, as when there 
   last statement in BODY, as elisp."
     (case result-type
       (value
-       (let ((tmp-file (org-babel-temp-file "R-")))
+       (let ((tmp-file (org-babel-temp-file "sas-")))
          (org-babel-eval org-babel-sas-command
                          (format org-babel-sas-write-object-command
                                  (if row-names-p "TRUE" "FALSE")
@@ -669,7 +640,7 @@ This is useful for when you have buffers with many similar names, as when there 
                    (inferior-ess-send-input)))))) "\n"))))
   
   (defun org-babel-sas-process-value-result (result column-names-p)
-    "R-specific processing of return value.
+    "SAS-specific processing of return value.
   Insert hline if column names in output have been requested."
     (if column-names-p
         (cons (car result) (cons 'hline (cdr result)))
