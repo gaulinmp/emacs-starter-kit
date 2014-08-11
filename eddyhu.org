@@ -153,6 +153,16 @@ In dired mode, visit all marked files using. Bound to the "F" key.
 (add-hook 'dired-mode-hook 'stripe-listify-buffer)  
 #+end_src
 
+*** Mouse bindings
+#+BEGIN_SRC emacs-lisp
+
+(global-set-key [mouse-9] 'org-babel-previous-src-block)
+(global-set-key [mouse-8] 'org-babel-next-src-block)
+
+(global-set-key [C-mouse-9] 'outline-previous-heading)
+(global-set-key [C-mouse-8] 'outline-next-heading)
+
+#+END_SRC
 ** Local LaTeX settings
 *** In-text Smart Quotes (XeLaTeX only)
     Redefine TeX-open-quote and TeX-close-quote to be smart quotes by default. Below, in the local org-mode settings, we'll also map the relevant function to a key we can use in org-mode, too. If you don't use XeLaTeX for processing all your =.tex= files, you should disable this option.
@@ -618,7 +628,7 @@ Some last tweaks.
                cursor-in-non-selected-windows nil)
 
  (setq default-frame-alist '((font-backend . "xft")
-                             (font . "Consolas")
+                             (font . "Inconsolata")
                              (vertical-scroll-bars . 0)
                              (menu-bar-lines . 0)
                              (tool-bar-lines . 0)
