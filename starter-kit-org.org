@@ -22,7 +22,17 @@ HTML and LaTeX exporters are shown by default. We add the Markdown exporter to t
 (require 'ox-md)
 
 (setq org-completion-use-ido t)
-;; (require 'org-special-blocks)
+;; After fighting to get this working on Windows, I am giving up.
+(cond
+   ((string-equal system-type "darwin")
+        ;; Add OS X specific packages
+        (require 'org-special-blocks)
+    )
+   ((string-equal system-type "gnu/linux")
+        ;; Add Linux specific packages
+        (require 'org-special-blocks)
+    )
+)
 ;; (if window-system (require 'org-mouse))
 
 ;; Compatibility with WindMove
