@@ -7,4 +7,4 @@
 # condition: (string= ess-language "SAS")
 # type: snippet
 # --
-$0X tar zcf - ${1:/mnt/data/SASTemp/&syslast.}.sas7bdat | ssh ${2:ec2} "tar zxf - -C ${3:/scratch/eddyhu}" ;
+$0%SYSEXEC %STR(cd ${1:/mnt/data/SASTemp/};tar zcf - ${2:&syslast.}.sas7bdat | ssh ${3:ec2} "tar zxf - -C ${4:/scratch/eddyhu}" ;);%PUT DONE;
