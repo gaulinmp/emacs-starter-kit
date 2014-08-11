@@ -1,0 +1,24 @@
+#+TITLE: Local User Customizations
+#+OPTIONS: toc:nil num:nil ^:nil
+
+* Starter Kit gaulinmp
+This file contains very local customizations---ones that in some cases
+you will not be able to just drop in and use because, e.g., they
+involve references to particular files on my own machine. It's
+included here for completeness, and as and example of the kind of
+things you might put in your own user-specific file.
+
+#+BEGIN_SRC emacs-lisp
+  (defun unix-file ()
+    "Change the current buffer to Latin 1 with Unix line-ends."
+    (interactive)
+    (set-buffer-file-coding-system 'iso-latin-1-unix t))
+  (defun dos-file ()
+    "Change the current buffer to Latin 1 with DOS line-ends."
+    (interactive)
+    (set-buffer-file-coding-system 'iso-latin-1-dos t))
+  (defun mac-file ()
+    "Change the current buffer to Latin 1 with Mac line-ends."
+    (interactive)
+    (set-buffer-file-coding-system 'iso-latin-1-mac t))
+#+END_SRC
