@@ -1,7 +1,7 @@
 #+TITLE: Local User Customizations
 #+OPTIONS: toc:nil num:nil ^:nil
 
-* Starter Kit gaulinmp
+* Starter Kit Hermes (OS X Machine)
 This file contains very local customizations---ones that in some cases
 you will not be able to just drop in and use because, e.g., they
 involve references to particular files on my own machine. It's
@@ -127,6 +127,14 @@ In dired mode, visit all marked files using. Bound to the "F" key.
 (add-hook 'org-mode-hook 'org-table-stripes-enable)
 (add-hook 'dired-mode-hook 'stripe-listify-buffer)
 #+end_src
+
+** Initial Window Size/Location
+#+name: win-loc-pos
+#+begin_src emacs-lisp
+(setq initial-frame-alist
+       '((top . 10) (left . 10) (width . 195) (height . 60)))
+#+end_src
+
 
 ** Local LaTeX settings
 *** In-text Smart Quotes (XeLaTeX only)
