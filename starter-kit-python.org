@@ -26,7 +26,7 @@ supplied by the Python distribution itself.
    "';'.join(module_completion('''%s'''))\n"
    python-shell-completion-string-code
      "';'.join(get_ipython().Completer.all_completions('''%s'''))\n"
-   org-babel-python-command python-shell-interpreter python-shell-interpreter-args)
+   org-babel-python-command (concat python-shell-interpreter " " python-shell-interpreter-args))
     
   (defun my-start-python ()
     (interactive)
