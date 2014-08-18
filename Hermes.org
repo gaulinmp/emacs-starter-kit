@@ -69,7 +69,23 @@ Just maximize the frame. Not true fullscreen
   (global-set-key (kbd "C-c m") 'maximize-frame)
 #+end_src
 
-**** Option 2
+**** Option 2  
+Fullscreen toggle using maxframe.el. 
+#+source: fullscreen-3
+#+begin_src emacs-lisp :tangle no
+  
+ (require 'maxframe)
+ (defvar my-fullscreen-p t "Check if fullscreen is on or off")
+ (defun my-toggle-fullscreen ()
+ (interactive)
+ (setq my-fullscreen-p (not my-fullscreen-p))
+ (if my-fullscreen-p
+ (restore-frame)
+ (maximize-frame)))
+ (global-set-key (kbd "C-c f") 'my-toggle-fullscreen)    
+#+end_src
+
+**** Option 3
 For use with Yamamoto Mitsuharu's Carbon-patched Emacs. (This is
     what I use, but it requires you compile a custom version of Emacs provided by Mitsuharu.)
 
@@ -141,6 +157,17 @@ In dired mode, visit all marked files using. Bound to the "F" key.
 (eshell)
 #+END_SRC
 
+*** Ace Jump Mode
+Quickly move to spots in the buffer.
+
+#+name: ace-jump
+#+begin_src emacs-lisp
+  
+  (require 'ace-jump-mode)
+  (define-key global-map (kbd "C-o") 'ace-jump-mode)
+  
+#+end_src
+  
 ** Local LaTeX settings
 *** In-text Smart Quotes (XeLaTeX only)
     Redefine TeX-open-quote and TeX-close-quote to be smart quotes by default. Below, in the local org-mode settings, we'll also map the relevant function to a key we can use in org-mode, too. If you don't use XeLaTeX for processing all your =.tex= files, you should disable this option.
@@ -190,6 +217,7 @@ Tell RefTeX where the bibliography files are.
 
     ;; Default bibliography
     (setq reftex-default-bibliography
+
     '("~/bibs/ebib.bib"))
 
 
@@ -206,6 +234,7 @@ Tell RefTeX where the bibliography files are.
     ;;               (setq cdlatex-paired-parens
     ;;                     '("$[{("))
     ;;             )))
+
 #+end_src
 
 *** Local vc commands
@@ -245,6 +274,15 @@ A pandoc/gfm menu for markdown and tex files.
   (add-hook 'TeX-mode-hook 'turn-on-pandoc)
   (add-hook 'pandoc-mode-hook 'pandoc-load-default-settings)
   (add-to-list 'auto-mode-alist '("README\\.md\\'" . gfm-mode))
+#+end_src
+
+** Local Polymode Support
+Polymode is a new package that supports multiple modes inside a single buffer. It is aimed particularly at literate programming approaches and supports, e.g., R and markdown in a single =.Rmd= file. So it is very useful with knitr in R, given that ESS does not yet fully support =.Rmd= files.
+
+#+source: Polymode
+#+begin_src emacs-lisp
+  (require 'poly-R)
+  (require 'poly-markdown)
 #+end_src
 
 ** Local iBuffer Settings
@@ -308,35 +346,35 @@ When in an org-mode buffer, bind TeX-insert-quote to =C-c "=. Turned off by defa
 #+end_src
 
 *** XeLaTeX and pdfLaTeX Export Settings
-   Configure org-mode to export directly to PDF using pdflatex or
-   xelatex, compiling the bibliography as it goes, with my preferred
-   setup in each case. There is a good deal of local stuff in this section. The required style files used below are available at https://github.com/kjhealy/latex-custom-kjh. You may need to adjust or remove some of these settings depending on your
-   preferences and local configuration.
+   Configure org-mode to export directly to PDF using  xelatex, compiling the bibliography as it goes, with my preferred setup in each case. There is a good deal of local stuff in this section. The required style files used below are available at https://github.com/kjhealy/latex-custom-kjh. You may need to adjust or remove some of these settings depending on your preferences and local configuration.
 
 #+source: orgmode-xelatex-export
 #+begin_src emacs-lisp
     (require 'org-latex)
+
     ;; Choose either listings or minted for exporting source code blocks.
     ;; Using minted (as here) requires pygments be installed. To use the
     ;; default listings package instead, use
-    ;; (setq org-export-latex-listings t)
+    ;; (setq org-latex-listings t)
     ;; and change references to "minted" below to "listings"
-    (setq org-export-latex-listings 'minted)
-
-    ;; default settings for minted code blocks
-    (setq org-export-latex-minted-options
+    (setq org-latex-listings 'minted)
+    
+    ;; default settings for minted code blocks.
+    ;; bg will need to be defined in the preamble of your document. It's defined in  org-preamble-xelatex.sty below.
+    (setq org-latex-minted-options
           '(;("frame" "single")
-            ("bgcolor" "bg") ; bg will need to be defined in the preamble of your document. It's defined in org-preamble-pdflatex.sty and org-preamble-xelatex.sty below.
+            ("bgcolor" "bg") 
             ("fontsize" "\\small")
             ))
-  ;x; turn off the default toc behavior; deal with it properly in headers to files.
-  (defun org-export-latex-no-toc (depth)
-      (when depth
+  ;; turn off the default toc behavior; deal with it properly in headers to files.
+  (defun org-latex-no-toc (depth)  
+    (when depth
         (format "%% Org-mode is exporting headings to %s levels.\n"
                 depth)))
-  (setq org-export-latex-format-toc-function 'org-export-latex-no-toc)
-
-    (add-to-list 'org-export-latex-classes
+  (setq org-latex-format-toc-function 'org-latex-no-toc)
+  
+  ;; note the insertion of the \input statement for the vc information 
+  (add-to-list 'org-latex-classes
                  '("memarticle"
                    "\\documentclass[11pt,oneside,article]{memoir}"
                     ("\\section{%s}" . "\\section*{%s}")
@@ -345,59 +383,26 @@ When in an org-mode buffer, bind TeX-insert-quote to =C-c "=. Turned off by defa
                     ("\\paragraph{%s}" . "\\paragraph*{%s}")
                     ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
 
-    (add-to-list 'org-export-latex-classes
+  (add-to-list 'org-latex-classes
+
                  '("membook"
                    "\\documentclass[11pt,oneside]{memoir}"
                    ("\\chapter{%s}" . "\\chapter*{%s}")
                    ("\\section{%s}" . "\\section*{%s}")
                    ("\\subsection{%s}" . "\\subsection*{%s}")
                    ("\\subsubsection{%s}" . "\\subsubsection*{%s}")))
-
-    ;; Originally taken from Bruno Tavernier: http://thread.gmane.org/gmane.emacs.orgmode/31150/focus=31432
-    ;; but adapted to use latexmk 4.22 or higher.
-    (defun my-auto-tex-cmd ()
-      "When exporting from .org with latex, automatically run latex,
-                       pdflatex, or xelatex as appropriate, using latexmk."
-      (let ((texcmd)))
-      ;; default command: pdflatex
-      (setq texcmd "latexmk -pdflatex='pdflatex -synctex=1 --shell-escape --' -pdf %f")
-      ;; pdflatex -> .pdf
-      (if (string-match "LATEX_CMD: pdflatex" (buffer-string))
-          (setq texcmd "latexmk -pdflatex='pdflatex -synctex=1 --shell-escape' -pdf %f"))
-      ;; xelatex -> .pdf
-      (if (string-match "LATEX_CMD: xelatex" (buffer-string))
-          (setq texcmd "latexmk -pdflatex='xelatex -synctex=1 --shell-escape' -pdf %f"))
-      ;; LaTeX compilation command
-      (setq org-latex-to-pdf-process (list texcmd)))
-
-    (add-hook 'org-export-latex-after-initial-vars-hook 'my-auto-tex-cmd)
-
-    ;; Default packages included in /every/ tex file, latex, pdflatex or xelatex
-    (setq org-export-latex-packages-alist
-          '(("" "graphicx" t)
+  ;; LaTeX compilation command. For orgmode docs we just always use xelatex for convenience.
+  ;; You can change it to pdflatex if you like, just remember to make the adjustments to the packages-alist below.
+  (setq org-latex-pdf-process '("latexmk -pdflatex='xelatex -synctex=1 --shell-escape' -pdf %f"))
+  
+  ;; Default packages included in the tex file. As before, org-preamble-xelatex is part of latex-custom-kjh.
+  ;; There's org-preamble-pdflatex as well, if you wish to use that instead.
+  (setq org-latex-default-packages-alist nil)     
+  (setq org-latex-packages-alist
+          '(("minted" "org-preamble-xelatex" t)
+            ("" "graphicx" t)
             ("" "longtable" nil)
-            ("" "rotating" t)
-            ("" "setspace" t)
-            ("" "amsmath" t)
-            ("" "amsthm" t)
-            ("" "datetime" t)
-            ("longnamesfirst" "natbib" t)
-
-            ))
-
-    ;; Custom packages
-    (defun my-auto-tex-parameters ()
-      "Automatically select the tex packages to include. See https://github.com/kjhealy/latex-custom-kjh for the support files included here."
-      ;; default packages for ordinary latex or pdflatex export
-      (setq org-export-latex-default-packages-alist
-            '(("AUTO" "inputenc" t)
-              ("minted,minion" "org-preamble-pdflatex" t)))
-      ;; Packages to include when xelatex is used
-      (if (string-match "LATEX_CMD: xelatex" (buffer-string))
-          (setq org-export-latex-default-packages-alist
-                '(("minted" "org-preamble-xelatex" t) ))))
-
-    ;(add-hook 'org-export-latex-after-initial-vars-hook 'my-auto-tex-parameters)
+            ("" "float" ))) 
 #+end_src
 
 *** ebib and citation settings
@@ -506,19 +511,20 @@ Create =html= files form the =org= sources, to help with documentation. To set u
   (setq org-publish-project-alist
          '(("org"
             :base-directory "~/.emacs.d/"
-            :publishing-directory "~/Documents/"
-            :auto-sitemap t
+
+            :publishing-directory "~/Documents/websites/esk/"
+            :publishing-function org-html-publish-to-html
+            :auto-sitemap t            
             :sitemap-filename "index.org"
             :sitemap-title "Emacs Starter Kit for the Social Sciences: Documentation"
             :section-numbers t
-            :table-of-contents nil
-            :style "<link rel=\"stylesheet\"
-                   href=\"http://kieranhealy.org/stylesheets/screen.css\"
-                   type=\"text/css\"/>")))
-
-    (setq org-export-html-style-extra "")
-    (setq org-export-html-postamble nil)
-
+            :table-of-contents t
+            :html-head "<link rel=\"stylesheet\"
+                   href=\"http://kieranhealy.org/css/org.css\"
+                   type=\"text/css\"/>"            )))
+  
+  (setq org-html-postamble nil)
+  
 #+end_src
 
 ** IRC
@@ -561,7 +567,6 @@ Some last tweaks.
   '(TeX-engine (quote xetex))
   ;; '(TeX-view-program-list (quote (("Skim" "/Applications/Skim.app/Contents/SharedSupport/displayline %n %o %b"))))
   ;; '(TeX-view-program-selection (quote (((output-dvi style-pstricks) "dvips and gv") (output-dvi "xdvi") (output-pdf "Skim") (output-html "xdg-open"))))
-  '(show-paren-mode t)
   '(blink-cursor-mode nil)
   '(text-mode-hook (quote (text-mode-hook-identify)))
   )
@@ -597,3 +602,8 @@ Some last tweaks.
  (menu-bar-mode 1)
 #+END_SRC
 
+
+#+source: message-line
+#+begin_src emacs-lisp
+  (message "Starter Kit User File loaded.")
+#+end_src

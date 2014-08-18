@@ -17,6 +17,7 @@ This file provides settings for ESS and R.
 #+source: ide-ess
 #+begin_src emacs-lisp
   (add-hook 'ess-mode-hook 'run-starter-kit-coding-hook)
+  (add-hook 'ess-R-post-run-hook 'smartparens-mode)
 #+end_src
 
 ** Define Rnw-mode and make LaTeX aware of it. 
@@ -24,6 +25,7 @@ This file provides settings for ESS and R.
 #+begin_src emacs-lisp
 (add-to-list 'auto-mode-alist '("\\.Rnw\\'" . Rnw-mode))
 (add-to-list 'auto-mode-alist '("\\.Snw\\'" . Rnw-mode))
+(add-to-list 'auto-mode-alist '("\\.Rmd\\'" . Rnw-mode))
 
 ;; Make TeX and RefTex aware of Snw and Rnw files
 (setq reftex-file-extensions
@@ -43,6 +45,12 @@ This file provides settings for ESS and R.
 	    (setq TeX-command-default "Sweave")))
 
 
+#+end_src
+
+** Use Knitr to process Sweave documents
+#+source: knitr-swv
+#+begin_src emacs-lisp
+  (setq ess-swv-processor "'knitr")
 #+end_src
  
 ** Make shift-enter do a lot in ESS.
@@ -203,6 +211,8 @@ cacheSweave() library, which uses a different driver. So we need a
 separate command for that. The following solution comes from [[http://blog.nguyenvq.com/2009/05/14/editingadding-on-to-sweave-features-in-ess/][Vinh
 Nguyen]] and allows for cacheSweave() compilation with M-n w. 
 
+Note that unless you really need Sweave (.e.g, because you're writing R vignettes) then you can use Knitr instead, which includes its own caching support. 
+
 #+source: ess-cacheSweave
 #+begin_src emacs-lisp :tangle no
 
@@ -251,21 +261,19 @@ Nguyen]] and allows for cacheSweave() compilation with M-n w.
 
 #+end_src
 
-** ESS Tracebug: A debugger for your R code
-This is an emacs package for interactive debugging and error tracing
-in ESS. More details on [[http://code.google.com/p/ess-tracebug/][the ess-tracebug project]] can be found on its
-[[http://code.google.com/p/ess-tracebug/][Google Code page]].
 
-#+source: ess-tracebug
+
+#+source: message-line
 #+begin_src emacs-lisp
-  (require 'ess-tracebug)
-  (add-hook 'ess-post-run-hook 'ess-tracebug t)
-  (define-key ess-mode-map "\M-]" 'next-error)
-  (define-key ess-mode-map "\M-[" 'previous-error)
-  (define-key inferior-ess-mode-map "\M-]" 'next-error-no-select)
-  (define-key inferior-ess-mode-map "\M-[" 'previous-error-no-select)
-  (define-key compilation-minor-mode-map [(?n)] 'next-error-no-select)
-  (define-key compilation-minor-mode-map [(?p)] 'previous-error-no-select)
+  (message "Starter Kit Stats loaded.")
+#+end_src
+** Uniquify Buffer Names
+This is useful for when you have buffers with many similar names, as when there are various open files from different folders named =analysis.R= or similar. 
+
+#+source: uniquify
+#+begin_src emacs-lisp
+  (require 'uniquify)
+  (setq uniquify-buffer-name-style 'post-forward-angle-brackets)  
 #+end_src
 ** SAS
 #+BEGIN_SRC emacs-lisp :tangle ob-sas.el
