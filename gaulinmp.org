@@ -78,3 +78,11 @@ Google anything.el for source.
 #+END_SRC
 
 
+
+** Desktop mode for reopening files
+This code was taken from http://www.emacswiki.org/emacs/DeskTop
+
+#+BEGIN_SRC emacs-lisp
+    (desktop-save-mode 1)
+#+END_SRC
+
