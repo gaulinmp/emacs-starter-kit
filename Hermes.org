@@ -132,9 +132,14 @@ In dired mode, visit all marked files using. Bound to the "F" key.
 #+name: win-loc-pos
 #+begin_src emacs-lisp
 (setq initial-frame-alist
-       '((top . 10) (left . 10) (width . 195) (height . 60)))
+       '((top . 0) (left . 0) (width . 200) (height . 60)))
 #+end_src
 
+** Eshell config Settings
+#+BEGIN_SRC emacs-lisp
+(setq eshell-rc-script "~/.emacs.d/.eshellrc")
+(eshell)
+#+END_SRC
 
 ** Local LaTeX settings
 *** In-text Smart Quotes (XeLaTeX only)
