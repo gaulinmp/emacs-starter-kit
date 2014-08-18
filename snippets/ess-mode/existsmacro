@@ -1,0 +1,17 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: exists MACRO
+# key: existsmacro
+# group: sas
+# binding: direct-keybinding
+# --
+
+%MACRO GET_SOURCE_DATA();
+%IF NOT %SYSFUNC( EXIST( $1 ) ) %THEN %DO;
+  
+  $0
+ 
+%END;
+%ELSE %DO; %PUT $1 DB exists; %END;
+%MEND GET_SOURCE_DATA;
+%GET_SOURCE_DATA();
+
