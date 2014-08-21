@@ -25,6 +25,7 @@ The following packages will be downloaded and installed.
                                 'expand-region
                                 ;; 'gist
                                 'hl-line+
+                                'helm         ;; Navigation aid
                                 'idle-highlight-mode
                                 'inf-ruby
                                 'latex-pretty-symbols
@@ -48,6 +49,7 @@ The following packages will be downloaded and installed.
                                 ; 'tango-2-theme
                                 ; 'textmate
                                 ;; 'typopunct
+                                'visual-regexp
                                 'yaml-mode
                                 'yasnippet
                                 'zenburn-theme
