@@ -1,14 +1,14 @@
 #+TITLE: Starter Kit Statistics
 #+OPTIONS: toc:nil num:nil ^:nil
 
-This is part of the [[file:starter-kit.org][Emacs Starter Kit]]. 
+This is part of the [[file:starter-kit.org][Emacs Starter Kit]].
 
-This file provides settings for ESS and R. 
+This file provides settings for ESS and R.
 
 * ESS
-   Load ESS: Emacs Speaks Statistics, and several further tweaks for R. 
+   Load ESS: Emacs Speaks Statistics, and several further tweaks for R.
 
-** Load ESS 
+** Load ESS
 #+src-name: ess-mode
 #+begin_src emacs-lisp
  (require 'ess-site)
@@ -20,7 +20,7 @@ This file provides settings for ESS and R.
   (add-hook 'ess-R-post-run-hook 'smartparens-mode)
 #+end_src
 
-** Define Rnw-mode and make LaTeX aware of it. 
+** Define Rnw-mode and make LaTeX aware of it.
 #+srcname: misc-r
 #+begin_src emacs-lisp
 (add-to-list 'auto-mode-alist '("\\.Rnw\\'" . Rnw-mode))
@@ -52,13 +52,13 @@ This file provides settings for ESS and R.
 #+begin_src emacs-lisp
   (setq ess-swv-processor "'knitr")
 #+end_src
- 
+
 ** Make shift-enter do a lot in ESS.
  Use shift-enter to split window & launch R (if not running), execute
  highlighted region (if R running & area highlighted), or execute
  current line (and move to next line, skipping comments). Nice. See
  http://www.emacswiki.org/emacs/EmacsSpeaksStatistics,
- FelipeCsaszar. Adapted to split vertically instead of horizontally. 
+ FelipeCsaszar. Adapted to split vertically instead of horizontally.
 #+src-name: ess-shift-enter
 #+begin_src emacs-lisp
     ;; R Stuff
@@ -78,8 +78,9 @@ This file provides settings for ESS and R.
               (R))
             (set-window-buffer w2 "*R*")
             (set-window-buffer w1 w1name))
-    
+
     ;; SAS Stuff
+    ;;          (ess-sas-interactive))
       (setq-default ess-sas-submit-command-options "-rsasuser -noovp -nosyntaxcheck")
         (defun my-ess-start-SAS ()
           (interactive)
@@ -91,7 +92,7 @@ This file provides settings for ESS and R.
               (ess-sas-interactive))
             (set-window-buffer w2 "*iESS[SAS]*")
             (set-window-buffer w1 w1name))
-    
+
     ;; STATA Stuff
         (defun my-ess-start-STATA ()
           (interactive)
@@ -103,7 +104,7 @@ This file provides settings for ESS and R.
               (stata))
             (set-window-buffer w2 "*stata*")
             (set-window-buffer w1 w1name))
-  
+
     ;; ESS Stuff
         (defun my-ess-eval ()
           (interactive)
@@ -113,7 +114,7 @@ This file provides settings for ESS and R.
             (my-ess-start-SAS)) ; Launch SAS
           (if (equal ess-language "STA")
             (my-ess-start-STATA)) ; Launch STATA
-  
+
           (if (and transient-mark-mode mark-active)
               (call-interactively 'ess-eval-region)
             (call-interactively 'ess-eval-line-and-step)))
@@ -124,14 +125,24 @@ This file provides settings for ESS and R.
                   '(lambda()
                      (local-set-key [C-up] 'comint-previous-input)
                      (local-set-key [C-down] 'comint-next-input)))
-       (add-hook 'Rnw-mode-hook 
-                '(lambda() 
-                   (local-set-key [(shift return)] 'my-ess-eval))) 
+       (add-hook 'Rnw-mode-hook
+                '(lambda()
+                   (local-set-key [(shift return)] 'my-ess-eval)))
         (require 'ess-site)
-  
+
   ;ESS hangs if you eval long statements;
   (setq ess-eval-visibly-p nil)
 #+end_src
+
+** Fix Tramp and Plink issue in Windows
+#+BEGIN_SRC emacs-lisp
+    (cond
+       ((string-equal system-type "windows-nt")
+            ;; For some reason SAS sends cmdproxy.exe
+            (setq-default explicit-shell-file-name "/bin/bash")
+        )
+    )
+#+END_SRC
 
 ** R-autos
    Function completion. Conflicts with autocomplete.
@@ -142,7 +153,7 @@ This file provides settings for ESS and R.
 #+end_src
 ** R-object tooltips
 Taken from http://blogisticreflections.wordpress.com/2009/10/01/r-object-tooltips-in-ess/
-#+begin_quote 
+#+begin_quote
  I have defined a function, ess-R-object-tooltip, that when
  invoked, will return a tooltip with some information about
  the object at point.  The information returned is
@@ -209,14 +220,14 @@ ESS comes with support for Sweave, e.g.,: M-n s M-n P from the Rnw
 file. But we also want to be able to conveniently use the
 cacheSweave() library, which uses a different driver. So we need a
 separate command for that. The following solution comes from [[http://blog.nguyenvq.com/2009/05/14/editingadding-on-to-sweave-features-in-ess/][Vinh
-Nguyen]] and allows for cacheSweave() compilation with M-n w. 
+Nguyen]] and allows for cacheSweave() compilation with M-n w.
 
-Note that unless you really need Sweave (.e.g, because you're writing R vignettes) then you can use Knitr instead, which includes its own caching support. 
+Note that unless you really need Sweave (.e.g, because you're writing R vignettes) then you can use Knitr instead, which includes its own caching support.
 
 #+source: ess-cacheSweave
 #+begin_src emacs-lisp :tangle no
 
-  
+
 (defun ess-swv-run-in-R2 (cmd &optional choose-process)
   "Run \\[cmd] on the current .Rnw file.  Utility function not called by user."
   (let* ((rnw-buf (current-buffer)))
@@ -268,48 +279,48 @@ Note that unless you really need Sweave (.e.g, because you're writing R vignette
   (message "Starter Kit Stats loaded.")
 #+end_src
 ** Uniquify Buffer Names
-This is useful for when you have buffers with many similar names, as when there are various open files from different folders named =analysis.R= or similar. 
+This is useful for when you have buffers with many similar names, as when there are various open files from different folders named =analysis.R= or similar.
 
 #+source: uniquify
 #+begin_src emacs-lisp
   (require 'uniquify)
-  (setq uniquify-buffer-name-style 'post-forward-angle-brackets)  
+  (setq uniquify-buffer-name-style 'post-forward-angle-brackets)
 #+end_src
 ** SAS
 #+BEGIN_SRC emacs-lisp :tangle ob-sas.el
   ;;; ob-sas.el --- org-babel functions for R code evaluation
-  
+
   ;; Copyright (C) 2009-2014 Free Software Foundation, Inc.
-  
+
   ;; Author: Eric Schulte
   ;;      Dan Davison
   ;;      Edwin Hu
   ;; Keywords: literate programming, reproducible research, R, statistics
   ;; Homepage: http://orgmode.org
-  
+
   ;; This file is part of GNU Emacs.
-  
+
   ;; GNU Emacs is free software: you can redistribute it and/or modify
   ;; it under the terms of the GNU General Public License as published by
   ;; the Free Software Foundation, either version 3 of the License, or
   ;; (at your option) any later version.
-  
+
   ;; GNU Emacs is distributed in the hope that it will be useful,
   ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
   ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   ;; GNU General Public License for more details.
-  
+
   ;; You should have received a copy of the GNU General Public License
   ;; along with GNU Emacs.  If not, see <http://www.gnu.org/licenses/>.
-  
+
   ;;; Commentary:
-  
+
   ;; Org-Babel support for evaluating R code
-  
+
   ;;; Code:
   (require 'ob)
   (eval-when-compile (require 'cl))
-  
+
   (declare-function orgtbl-to-tsv "org-table" (table params))
   (declare-function SAS "ext:essd-sas" (&optional start-args))
   (declare-function inferior-ess-send-input "ext:ess-inf" ())
@@ -319,38 +330,38 @@ This is useful for when you have buffers with many similar names, as when there 
   (declare-function org-remove-if-not "org" (predicate seq))
   (declare-function org-every "org" (pred seq))
   (add-to-list 'org-babel-tangle-lang-exts '("sas" . "sas"))
-  
+
   (defconst org-babel-header-args:sas
     '((results             . ((file verbatim)
                               (html code)
                               (replace silent append prepend)
                               (output value graphics))))
     "SAS-specific header arguments.")
-  
+
   (defconst ob-sas-safe-header-args
     (append org-babel-safe-header-args
             '())
     "Header args which are safe for SAS babel blocks.
-  
+
   See `org-babel-safe-header-args' for documentation of the format of
   this variable.")
-  
+
   (defvar org-babel-default-header-args:sas '())
   (put 'org-babel-default-header-args:sas 'safe-local-variable
        (org-babel-header-args-safe-fn ob-sas-safe-header-args))
-  
+
   (defcustom org-babel-sas-command "sas"
     "Name of command to use for executing SAS code."
     :group 'org-babel
     :version "24.1"
     :type 'string)
-  
+
   (defvar ess-local-process-name) ; dynamically scoped
   (defun org-babel-edit-prep:sas (info)
     (let ((session (cdr (assoc :session (nth 2 info)))))
       (when (and session (string-match "^\\*\\(.+?\\)\\*$" session))
         (save-match-data (org-babel-sas-initiate-session session nil)))))
-  
+
   (defun org-babel-expand-body:sas (body params &optional graphics-file)
     "Expand BODY according to PARAMS, return the expanded body."
     (let ((graphics-file
@@ -364,7 +375,7 @@ This is useful for when you have buffers with many similar names, as when there 
                   (when (cdr (assoc :epilogue params))
                     (list (cdr (assoc :epilogue params)))))
                  "\n")))
-  
+
   (defun org-babel-execute:sas (body params)
     "Execute a block of SAS code.
   This function is called by `org-babel-execute-src-block'."
@@ -392,7 +403,7 @@ This is useful for when you have buffers with many similar names, as when there 
               (org-babel-sas-evaluate
                session full-body result-type result-params)))
         (if graphics-file nil result))))
-  
+
     (defun org-babel-prep-session:sas (session params)
       "Prepare SESSION according to the header arguments specified in PARAMS."
       (let* ((session (org-babel-sas-initiate-session session params))
@@ -402,7 +413,7 @@ This is useful for when you have buffers with many similar names, as when there 
                   (end-of-line 1) (insert var) (comint-send-input nil t)
                   (org-babel-comint-wait-for-output session)) var-lines))
         session))
-  
+
     (defun org-babel-load-session:sas (session body params)
       "Load BODY into SESSION."
       (save-window-excursion
@@ -411,9 +422,9 @@ This is useful for when you have buffers with many similar names, as when there 
             (goto-char (process-mark (get-buffer-process (current-buffer))))
             (insert (org-babel-chomp body)))
           buffer))))
-  
+
   ;; helper functions
-  
+
   (defun org-babel-variable-assignments:sas (params)
     "Return list of SAS statements assigning the block's variables."
     (let ((vars (mapcar #'cdr (org-babel-get-header params :var))))
@@ -431,13 +442,13 @@ This is useful for when you have buffers with many similar names, as when there 
                  (cdr (nth i (cdr (assoc :colname-names params))))
                  (cdr (nth i (cdr (assoc :rowname-names params)))))))
         (org-number-sequence 0 (1- (length vars)))))))
-  
+
   (defun org-babel-sas-quote-tsv-field (s)
     "Quote field S for export to SAS."
     (if (stringp s)
         (concat "\"" (mapconcat 'identity (split-string s "\"") "\"\"") "\"")
       (format "%S" s)))
-  
+
   (defun org-babel-sas-assign-elisp (name value colnames-p rownames-p)
     "Construct SAS code assigning the elisp VALUE to a variable named NAME."
     (if (listp value)
@@ -471,7 +482,7 @@ This is useful for when you have buffers with many similar names, as when there 
                      col.names = paste(\"V\", seq_len(%d), sep =\"\"))"
                       name file header row-names max))))
       (format "%s <- %s" name (org-babel-sas-quote-tsv-field value))))
-  
+
   (defvar ess-ask-for-ess-directory) ; dynamically scoped
   (defun org-babel-sas-initiate-session (session params)
     "If there is not a current SAS process then create one."
@@ -494,7 +505,7 @@ This is useful for when you have buffers with many similar names, as when there 
                    session
                  (buffer-name))))
             (current-buffer))))))
-  
+
   (defun org-babel-sas-associate-session (session)
     "Associate SAS code buffer with an SAS session.
   Make SESSION be the inferior ESS process associated with the
@@ -502,7 +513,7 @@ This is useful for when you have buffers with many similar names, as when there 
     (setq ess-local-process-name
           (process-name (get-buffer-process session)))
     (ess-make-buffer-current))
-  
+
   (defvar org-babel-sas-graphics-devices
     '((:bmp "bmp" "filename")
       (:jpg "jpeg" "filename")
@@ -515,13 +526,13 @@ This is useful for when you have buffers with many similar names, as when there 
       (:ps "postscript" "file")
       (:postscript "postscript" "file"))
     "An alist mapping graphics file types to SAS functions.
-  
+
   Each member of this list is a list with three members:
   1. the file extension of the graphics file, as an elisp :keyword
   2. the R graphics device function to call to generate such a file
   3. the name of the argument to this function which specifies the
      file to write to (typically \"file\" or \"filename\")")
-  
+
   (defun org-babel-sas-construct-graphics-device-call (out-file params)
     "Construct the call to the graphics device."
     (let* ((allowed-args '(:width :height :bg :units :pointsize
@@ -547,12 +558,12 @@ This is useful for when you have buffers with many similar names, as when there 
       (format "%s(%s=\"%s\"%s%s%s); tryCatch({"
               device filearg out-file args
               (if extra-args "," "") (or extra-args ""))))
-  
+
   (defvar org-babel-sas-eoe-indicator "'org_babel_R_eoe'")
   (defvar org-babel-sas-eoe-output "[1] \"org_babel_R_eoe\"")
-  
+
   (defvar org-babel-sas-write-object-command "{function(object,transfer.file){object;invisible(if(inherits(try({tfile<-tempfile();write.table(object,file=tfile,sep=\"\\t\",na=\"nil\",row.names=%s,col.names=%s,quote=FALSE);file.rename(tfile,transfer.file)},silent=TRUE),\"try-error\")){if(!file.exists(transfer.file))file.create(transfer.file)})}}(object=%s,transfer.file=\"%s\")")
-  
+
   (defun org-babel-sas-evaluate
     (session body result-type result-params column-names-p row-names-p)
     "Evaluate SAS code in BODY."
@@ -561,7 +572,7 @@ This is useful for when you have buffers with many similar names, as when there 
          session body result-type result-params column-names-p row-names-p)
       (org-babel-sas-evaluate-external-process
        body result-type result-params column-names-p row-names-p)))
-  
+
   (defun org-babel-sas-evaluate-external-process
     (body result-type result-params column-names-p row-names-p)
     "Evaluate BODY in external SAS process.
@@ -587,9 +598,9 @@ This is useful for when you have buffers with many similar names, as when there 
             (org-babel-import-elisp-from-file tmp-file '(16)))
           column-names-p)))
       (output (org-babel-eval org-babel-sas-command body))))
-  
+
   (defvar ess-eval-visibly-p)
-  
+
   (defun org-babel-sas-evaluate-session
     (session body result-type result-params column-names-p row-names-p)
     "Evaluate BODY in SESSION.
@@ -638,15 +649,15 @@ This is useful for when you have buffers with many similar names, as when there 
                                       (list body org-babel-sas-eoe-indicator)
                                       "\n"))
                    (inferior-ess-send-input)))))) "\n"))))
-  
+
   (defun org-babel-sas-process-value-result (result column-names-p)
     "SAS-specific processing of return value.
   Insert hline if column names in output have been requested."
     (if column-names-p
         (cons (car result) (cons 'hline (cdr result)))
       result))
-  
+
   (provide 'ob-sas)
-  
+
   ;;; ob-sas.el ends here
 #+END_SRC
