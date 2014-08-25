@@ -1,0 +1,47 @@
+#+TITLE: Starter Kit SQL
+#+OPTIONS: toc:nil num:nil ^:nil
+
+This is part of the [[file:starter-kit.org][Emacs Starter Kit]].
+
+* Starter kit SQL
+
+Support for SQL languages.
+
+** Shift+Enter
+
+#+BEGIN_SRC emacs-lisp
+  
+  (require 'sql)
+  (setq sql-buffer "*SQL*")
+  
+  (defun my-start-sql ()
+      (interactive)
+      (sql-set-product 'postgres)
+      (delete-other-windows)
+      (setq w1 (selected-window))
+      (setq w1name (buffer-name))
+      (setq w2 (split-window w1 nil t))
+      (if (not (member "*SQL*" (mapcar (function buffer-name) (buffer-list))))
+          (sql-postgres))
+      (set-window-buffer w2 "*SQL*")
+      (set-window-buffer w1 w1name))
+  
+  (defun my-sql-eval (&optional beg end)
+    (interactive)
+    (my-start-sql)
+    (let ((beg (cond (beg beg)
+                     ((region-active-p)
+                      (region-beginning))
+                     (t (line-beginning-position))))
+          (end (cond (end end)
+                     ((region-active-p)
+                      (copy-marker (region-end)))
+                     (t (line-end-position)))))
+      (sql-send-region beg end))
+  )
+  
+  (add-hook 'sql-mode-hook
+              '(lambda()
+                 (local-set-key [(shift return)] 'my-sql-eval)))    
+  
+#+END_SRC

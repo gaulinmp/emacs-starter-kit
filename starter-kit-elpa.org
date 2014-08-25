@@ -9,8 +9,8 @@ This is part of the [[file:starter-kit.org][Emacs Starter Kit]].
 The following packages will be downloaded and installed.
 
 #+begin_src emacs-lisp
-  (defvar starter-kit-packages (list 
-                                'ace-jump-mode                                
+  (defvar starter-kit-packages (list
+                                'ace-jump-mode
                                 'ag
                                 'anti-zenburn-theme
                                 'auto-complete
@@ -42,8 +42,9 @@ The following packages will be downloaded and installed.
                                 'jedi
                                 'redo+
                                 'ruby-mode
-                                'smartparens 
+                                'smartparens
                                 'smex
+                                'monokai-theme
                                 'solarized-theme
                                 'tango-2-theme
                                 'textmate
@@ -54,7 +55,7 @@ The following packages will be downloaded and installed.
                                 'zenburn-theme
                                 'auctex
                                 'ess
-                                'r-autoyas                                                              
+                                'r-autoyas
                                 )
     "Libraries that should be installed by default.")
 #+end_src
@@ -94,7 +95,7 @@ On your first run, this should pull in all the base packages.
 #+end_src
 
 Make sure the PATH variable is set properly. (Uses exec-path-from-shell package.)
-#+source: fix-path 
+#+source: fix-path
 #+begin_src emacs-lisp
   (when (memq window-system '(mac ns))
   (exec-path-from-shell-initialize))

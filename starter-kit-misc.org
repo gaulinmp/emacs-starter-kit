@@ -12,23 +12,26 @@ older, messier one. The Starter Kit comes with Ethan Schoonover's
 /Solarized/ color theme and the /Zenburn/ theme, in versions
 maintained by Bozhidar Batsov. Load it with =M-x load-theme
 solarized-dark= or =M-x load-theme solarized-light=. You can also try
-loading the =zenburn= and =anti-zenburn= themes. 
+loading the =zenburn= and =anti-zenburn= themes.
+
+I am using the =monokai= theme which you may need to install using
+=M-x package-install monokai-theme= which requires Emacs 24.
 
 #+source: colors
 #+begin_src emacs-lisp
   (add-to-list 'custom-theme-load-path "~/.emacs.d/elpa")
   (setq custom-safe-themes t)
-  (load-theme 'zenburn t)
+  (load-theme 'monokai t)
 #+end_src
 
-** Window system 
+** Window system
 
 #+srcname: starter-kit-window-view-stuff
-#+begin_src emacs-lisp 
+#+begin_src emacs-lisp
   (when window-system
     (setq frame-title-format '(buffer-file-name "%f" ("%b")))
     (tooltip-mode -1)
-    (tool-bar-mode -1)
+    (tool-bar-mode 1)
     (blink-cursor-mode -1))
 
   (mouse-wheel-mode t)
@@ -67,6 +70,12 @@ Thin window dividers and no scroll bars. Toggle with `C-c C-s`.
 
 ** Set browser
 Set this to whatever browser you use e.g...
+In my case whatever generic Chromium browser
+#+begin_src emacs-lisp
+(setq browse-url-browser-function 'browse-url-generic
+      browse-url-generic-program "google-chrome")
+#+end_src
+
 : ;; (setq browse-url-browser-function 'browse-url-firefox)
 : ;; (setq browse-url-browser-function 'browse-default-macosx-browser)
 : ;; (setq browse-url-browser-function 'browse-default-windows-browser)
@@ -81,7 +90,7 @@ Set this to whatever browser you use e.g...
 (auto-compression-mode t)
 #+end_src
 
-** Enable syntax highlighting 
+** Enable syntax highlighting
 #+begin_src emacs-lisp
 (global-font-lock-mode t)
 #+end_src
@@ -97,7 +106,7 @@ If launching Emacs as in windowing system, show the menu. If launching in a tty/
 #+end_src
 
 ** Save a list of recent files visited.
-#+begin_emacs-lisp 
+#+begin_emacs-lisp
 (recentf-mode 1)
 #+end_emacs-lisp
 ** Save place last visited in buffer
@@ -114,7 +123,7 @@ If launching Emacs as in windowing system, show the menu. If launching in a tty/
 ** ido mode
 ido-mode is like magic pixie dust!
 #+srcname: starter-kit-loves-ido-mode
-#+begin_src emacs-lisp 
+#+begin_src emacs-lisp
   (when (> emacs-major-version 21)
     (ido-mode t)
     (setq ido-enable-prefix nil
@@ -125,20 +134,20 @@ ido-mode is like magic pixie dust!
 #+end_src
 
 ** Other, tabs, imenu and a coding hook
-#+begin_src emacs-lisp 
+#+begin_src emacs-lisp
   (set-default 'indent-tabs-mode nil)
   (set-default 'indicate-empty-lines t)
   (set-default 'imenu-auto-rescan t)
-  
+
   (add-hook 'text-mode-hook 'turn-on-auto-fill)
   (add-hook 'text-mode-hook 'turn-on-flyspell)
   (add-hook 'LaTeX-mode-hook 'turn-on-flyspell)
   (add-hook 'markdown-mode-hook 'turn-on-flyspell)
   (add-hook 'org-mode-hook 'turn-on-flyspell)
-  
+
   (defvar starter-kit-coding-hook nil
     "Hook that gets run on activation of any programming mode.")
-  
+
   (defalias 'yes-or-no-p 'y-or-n-p)
   ;; Seed the random-number generator
   (random t)
@@ -155,7 +164,7 @@ ido-mode is like magic pixie dust!
 #+end_src
 
 ** Powerline provides a nicer modeline
-A nicer modeline. 
+A nicer modeline.
 #+source: powerline-load
 #+begin_src emacs-lisp
   (require 'powerline)
@@ -176,8 +185,9 @@ A nicer modeline.
 #+end_src
 
 ** Associate modes with file extensions
+[[https://github.com/magit/magit/issues/1014][magit conflict]] fix
 #+begin_src emacs-lisp
-(add-to-list 'auto-mode-alist '("COMMIT_EDITMSG$" . diff-mode))
+;(add-to-list 'auto-mode-alist '("COMMIT_EDITMSG$" . diff-mode))
 (add-to-list 'auto-mode-alist '("\\.css$" . css-mode))
 (require 'yaml-mode)
 (add-to-list 'auto-mode-alist '("\\.ya?ml$" . yaml-mode))
