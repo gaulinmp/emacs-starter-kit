@@ -1,0 +1,4 @@
+(if (file-exists-p "D:/Dropbox/Documents") (cd "D:/Dropbox/Documents"))
+(if (file-exists-p "~/Dropbox/Documents") (cd "~/Dropbox/Documents"))
+pwd
+echo "Heyo!"

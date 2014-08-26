@@ -1,0 +1,55 @@
+#+TITLE: Local Machine Customizations
+#+OPTIONS: toc:nil num:nil ^:nil
+
+* Starter Kit Windows Machine
+This file contains very local customizations---ones that in some cases
+you will not be able to just drop in and use because, e.g., they
+involve references to particular files on my own machine. It's
+included here for completeness, and as and example of the kind of
+things you might put in your own user-specific file.
+
+To use the customizations here yourself, /you must change the name of
+ this file to match your own user name or system name/. Those are the
+ values of the Emacs variables =user-login-name= or =system-name=, so
+ that it will be picked up by =init.el= when Emacs starts up, and get
+ loaded properly. To find the current value of these variables on your
+ system, launch emacs and do =C-h-v system-name [RET]= or =C-h-v
+ user-login-name [RET]=. For example, on my system =user-login-name=
+ is 'kjhealy', so this file is named =kjhealy.org=, and when Emacs
+ starts up with the starter kit it creates the file =kjhealy.el=.
+
+You will also need to change the values for the location of bibtex
+ databases, pandoc and orgmode-mobile specified below, and some other
+ settings. *Search for 'kjhealy' in this file* to find the paths that
+ need to be updated. Change them as needed or delete them if you don't
+ need these features.
+
+Finally, the [[*Local%20Org-mode%20XeLaTeX%20Export%20Settings][Local Org-mode XeLaTeX Export Settings]] section below has
+ references to fonts that you may not have available on your
+ system. Change the references as appropriate, or comment out or
+ delete the lines.
+
+
+
+** Windows Paths
+(add-to-list 'exec-path "c:/Users/gaulinmp/AppData/Local/GitHub/PortableGit_054f2e797ebafd44a30203088cd3d58663c627ef/bin"); git
+
+** Initial Window Size/Location
+#+name: win-loc-pos
+#+begin_src emacs-lisp
+(setq initial-frame-alist
+       '((top . 0) (left . 0) (width . 209) (height . 53)))
+#+end_src
+
+** Tramp does not work on windows so use plink
+plink is a putty program that does scp (I think.) Anyway, this makes tramp-like open /server:/.
+Found this on: https://web.archive.org/web/20140822000811/http://dietbuddha.blogspot.com/2012/11/configing-emacs-tramp-with-putty.html
+
+#+BEGIN_SRC emacs-lisp
+  (require 'tramp)
+  (set-default 'tramp-auto-save-directory "C:/Users/gaulinmp/AppData/Local/Temp")
+  (set-default 'tramp-default-method "plink")
+
+  ;(require 'ssh)
+  (setq ssh-program "plink")
+#+END_SRC

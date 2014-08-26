@@ -1,0 +1,293 @@
+#+TITLE: Local User Customizations
+#+OPTIONS: toc:nil num:nil ^:nil
+
+* Starter Kit User settings (gaulinmp)
+This file contains very local customizations---ones that in some cases
+you will not be able to just drop in and use because, e.g., they
+involve references to particular files on my own machine. It's
+included here for completeness, and as and example of the kind of
+things you might put in your own user-specific file.
+
+** Local Miscellaneous settings
+*** Color Theme Tweaks
+The theme package is loaded in =starter-kit-misc.org=. The settings
+here adjust the height of some headings in Org and LaTeX mode, as well
+as turning off the sans-serif heading style that AucTeX defaults to.
+
+#+srcname: local-settings
+#+begin_src emacs-lisp
+  (add-hook 'latex-mode-hook
+            (lambda ()
+              (set-face-attribute 'font-latex-sectioning-5-face nil :inherit nil :foreground "#b58900")
+              (set-face-attribute 'font-latex-sectioning-0-face nil :height 3)
+              (set-face-attribute 'font-latex-sectioning-1-face nil :height 2)
+              (set-face-attribute 'font-latex-sectioning-2-face nil :height 1.5)
+              (set-face-attribute 'font-latex-sectioning-3-face nil :height 1.2)
+              (set-face-attribute 'font-latex-sectioning-4-face nil :height 1.0)))
+
+   (add-hook 'org-mode-hook
+             (lambda ()
+               (set-face-attribute 'org-level-1 nil :height 1.5)
+               (set-face-attribute 'org-level-2 nil :height 1.2)
+               (set-face-attribute 'org-level-3 nil :height 1.1)
+               (set-face-attribute 'org-level-4 nil :height 1.1)
+               (set-face-attribute 'org-level-5 nil :height 1.1)))
+#+end_src
+
+*** Dired-x
+Dired extensions
+#+source: Dired-x
+#+begin_src emacs-lisp
+  (load "dired-x")
+#+end_src
+
+*** Dired open multiple files
+In dired mode, visit all marked files using. Bound to the "F" key.
+#+source: dired-F
+#+begin_src emacs-lisp
+  ;; (eval-after-load "dired"
+  ;; '(progn
+  ;;    (define-key dired-mode-map "F" 'my-dired-find-file)
+  ;;    (defun my-dired-find-file (&optional arg)
+  ;;      "Open each of the marked files, or the file under the point, or when prefix arg, the next N files "
+  ;;      (interactive "P")
+  ;;      (let* ((fn-list (dired-get-marked-files nil arg)))
+  ;;        (mapc 'find-file fn-list)))))
+#+end_src
+
+*** Stripe Dired buffers
+#+name: stripe-dired
+#+begin_src emacs-lisp
+(require 'stripe-buffer)
+(add-hook 'org-mode-hook 'org-table-stripes-enable)
+(add-hook 'dired-mode-hook 'stripe-listify-buffer)
+#+end_src
+
+*** Ace Jump Mode
+Quickly move to spots in the buffer.
+
+#+name: ace-jump
+#+begin_src emacs-lisp
+
+  (require 'ace-jump-mode)
+  (define-key global-map (kbd "C-o") 'ace-jump-mode)
+
+#+end_src
+
+** Local Org-mode Settings
+*** Smart-quote binding
+When in an org-mode buffer, bind TeX-insert-quote to =C-c "=. Turned off by default.
+
+#+source: org-mode-smartquote-key
+#+begin_src emacs-lisp :tangle no
+  (add-hook 'org-mode-hook 'smart-quote-keys)
+
+  (defun smart-quote-keys ()
+    (require 'typopunct)
+    (typopunct-change-language 'english)
+    (local-set-key (kbd "C-c \'") 'typopunct-insert-single-quotation-mark)
+    (local-set-key (kbd "C-c \"") 'typopunct-insert-quotation-mark)
+    )
+
+
+
+#+end_src
+
+*** Babel Settings
+   Configure org-mode so that when you edit source code in an indirect buffer (with C-c '), the buffer is opened in the current window. That way, your window organization isn't broken when switching.
+
+#+source: orgmode-indirect-buffer-settings
+#+begin_src emacs-lisp
+  (setq org-src-window-setup 'current-window)
+#+end_src
+
+*** HTML export Settings
+Create =html= files form the =org= sources, to help with documentation. To set up org-mode for publishing projects to HTML you will need to change these settings, as they apply only to the Starter Kit.
+
+#+source: html-export-settings
+#+begin_src emacs-lisp
+  (setq org-publish-project-alist
+         '(("org"
+            :base-directory "~/.emacs.d/"
+            :publishing-directory "~/Documents/"
+            :auto-sitemap t
+            :sitemap-filename "index.org"
+            :sitemap-title "Emacs Starter Kit for the Social Sciences: Documentation"
+            :section-numbers t
+            :table-of-contents nil
+            :style "<link rel=\"stylesheet\"
+                   href=\"http://kieranhealy.org/stylesheets/screen.css\"
+                   type=\"text/css\"/>")))
+
+    (setq org-export-html-style-extra "")
+    (setq org-export-html-postamble nil)
+
+#+end_src
+
+** Local Pandoc/GFM Support
+A pandoc/gfm menu for markdown and tex files.
+#+src-name: pandoc_mode
+#+begin_src emacs-lisp
+  (load "pandoc-mode")
+  (add-hook 'markdown-mode-hook 'turn-on-pandoc)
+  (add-hook 'TeX-mode-hook 'turn-on-pandoc)
+  (add-hook 'pandoc-mode-hook 'pandoc-load-default-settings)
+  (add-to-list 'auto-mode-alist '("README\\.md\\'" . gfm-mode))
+#+end_src
+** X-toolkit Lucid Customizations
+#+srcname:
+#+BEGIN_SRC emacs-lisp
+ (setq-default inhibit-startup-message 't
+               initial-scratch-message 'nil
+               save-place t
+               scroll-bar-mode nil
+               tool-bar-mode nil
+               menu-bar-mode nil
+               scroll-margin 0
+               indent-tabs-mode nil
+               flyspell-issue-message-flag 'nil
+               size-indication-mode t
+               scroll-conservatively 25
+               scroll-preserve-screen-position 1
+               cursor-in-non-selected-windows nil)
+
+ (setq default-frame-alist '((font-backend . "xft")
+                             ;(font . "Consolas")
+                             (vertical-scroll-bars . 0)
+                             (menu-bar-lines . 0)
+                             (tool-bar-lines . 0)
+                             (alpha 86 84)))
+
+ (tool-bar-mode -1)
+ (scroll-bar-mode -1)
+ (menu-bar-mode 1)
+#+END_SRC
+
+** IRC
+Sometimes useful for getting help on R or Emacs.
+#+source: rirc-configuration
+#+begin_src emacs-lisp
+  ;; connect to irc on invocation but don't autojoin any channels
+  (require 'rcirc)
+  (add-to-list 'rcirc-server-alist
+                       '("irc.freenode.net"))
+#+end_src
+
+** Final Custom elements
+Some last tweaks.
+
+#+srcname: final-custom
+#+begin_src emacs-lisp
+
+  (setq initial-major-mode 'org-mode)
+  ;; Line-spacing tweak (Optimized for PragmataPro)
+  (setq-default line-spacing 5)
+
+  ;; minimize fringe
+  (setq-default indicate-empty-lines nil)
+
+  ;; Add keybindings for commenting regions of text
+  (global-set-key (kbd "C-c ;") 'comment-or-uncomment-region)
+  (global-set-key (kbd "M-'") 'comment-or-uncomment-region)
+
+  ;; Base dir
+  (cd "~/")
+
+  ;; custom variables kludge. Why can't I get these to work via setq?
+  (custom-set-variables
+  ;; custom-set-variables was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+  ;;'(LaTeX-XeTeX-command "xelatex -synctex=1")
+  ;;'(TeX-engine (quote xetex))
+  ;; '(TeX-view-program-list (quote (("Skim" "/Applications/Skim.app/Contents/SharedSupport/displayline %n %o %b"))))
+  ;; '(TeX-view-program-selection (quote (((output-dvi style-pstricks) "dvips and gv") (output-dvi "xdvi") (output-pdf "Skim") (output-html "xdg-open"))))
+  '(show-paren-mode t)
+  '(blink-cursor-mode nil)
+  '(text-mode-hook (quote (text-mode-hook-identify)))
+  )
+
+#+end_src
+
+
+* Custom changes and functions
+** Quickly change line endings
+This code was taken from http://www.emacswiki.org/emacs/EndOfLineTips
+
+#+BEGIN_SRC emacs-lisp
+  (defun unix-file ()
+    "Change the current buffer to Latin 1 with Unix line-ends."
+    (interactive)
+    (set-buffer-file-coding-system 'iso-latin-1-unix t))
+  (defun dos-file ()
+    "Change the current buffer to Latin 1 with DOS line-ends."
+    (interactive)
+    (set-buffer-file-coding-system 'iso-latin-1-dos t))
+  (defun mac-file ()
+    "Change the current buffer to Latin 1 with Mac line-ends."
+    (interactive)
+    (set-buffer-file-coding-system 'iso-latin-1-mac t))
+#+END_SRC
+
+** Start helm
+Config taken from http://tuhdo.github.io/helm-intro.html
+
+#+BEGIN_SRC emacs-lisp
+(require 'helm)
+(setq helm-command-prefix-key "C-c h")
+(require 'helm-config)
+(require 'helm-eshell)
+(require 'helm-files)
+(require 'helm-grep)
+
+(define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebihnd tab to do persistent action
+(define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
+(define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
+
+(define-key helm-grep-mode-map (kbd "<return>")  'helm-grep-mode-jump-other-window)
+(define-key helm-grep-mode-map (kbd "n")  'helm-grep-mode-jump-other-window-forward)
+(define-key helm-grep-mode-map (kbd "p")  'helm-grep-mode-jump-other-window-backward)
+
+(setq
+ helm-google-suggest-use-curl-p t
+ helm-scroll-amount 4 ; scroll 4 lines other window using M-<next>/M-<prior>
+ helm-quick-update t ; do not display invisible candidates
+ helm-idle-delay 0.01 ; be idle for this many seconds, before updating in delayed sources.
+ helm-input-idle-delay 0.01 ; be idle for this many seconds, before updating candidate buffer
+ helm-ff-search-library-in-sexp t ; search for library in `require' and `declare-function' sexp.
+
+ helm-split-window-default-side 'other ;; open helm buffer in another window
+ helm-split-window-in-side-p t ;; open helm buffer inside current window, not occupy whole other window
+ helm-buffers-favorite-modes (append helm-buffers-favorite-modes
+                                     '(picture-mode artist-mode))
+ helm-candidate-number-limit 200 ; limit the number of displayed canidates
+ helm-M-x-requires-pattern 0     ; show all candidates when set to 0
+ helm-boring-file-regexp-list
+ '("\\.git$" "\\.hg$" "\\.svn$" "\\.CVS$" "\\._darcs$" "\\.la$" "\\.o$" "\\.i$") ; do not show these files in helm buffer
+ helm-ff-file-name-history-use-recentf t
+ helm-move-to-line-cycle-in-source t ; move to end or beginning of source
+                                        ; when reaching top or bottom of source.
+ ido-use-virtual-buffers t      ; Needed in helm-buffers-list
+ helm-buffers-fuzzy-matching t          ; fuzzy matching buffer names when non--nil
+                                        ; useful in helm-mini that lists buffers
+ )
+
+;; Save current position to mark ring when jumping to a different place
+(add-hook 'helm-goto-line-before-hook 'helm-save-current-pos-to-mark-ring)
+
+(helm-mode 1)
+(global-set-key (kbd "M-x") 'helm-M-x)
+(global-set-key (kbd "M-y") 'helm-show-kill-ring)
+(global-set-key (kbd "C-x b") 'helm-mini)
+(global-set-key (kbd "C-x C-f") 'helm-find-files)
+#+END_SRC
+
+** Mouse and Windows Settings
+#+BEGIN_SRC emacs-lisp
+; (setq mouse-drag-copy-region t)
+;; Overwritten by org mode. TODO find a workaround.
+; (windmove-default-keybindings 'meta)
+#+END_SRC
+** Eshell config Settings
+#+BEGIN_SRC emacs-lisp
