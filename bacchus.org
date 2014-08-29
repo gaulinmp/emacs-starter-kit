@@ -53,3 +53,13 @@ Found this on: https://web.archive.org/web/20140822000811/http://dietbuddha.blog
   ;(require 'ssh)
   (setq ssh-program "plink")
 #+END_SRC
+** Smooth scrolling on Windows
+Got from http://www.emacswiki.org/emacs/SmoothScrolling
+
+#+BEGIN_SRC emacs-lisp
+  ;; scroll one line at a time (less "jumpy" than defaults)
+    (setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
+    (setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
+    (setq mouse-wheel-follow-mouse nil) ;; don't scroll window under mouse
+    (setq scroll-step 1) ;; keyboard scroll one line at a time
+#+END_SRC
