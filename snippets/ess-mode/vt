@@ -1,0 +1,10 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: ViewTable
+# key: vt
+# group: sas
+# condition: (string= ess-language "SAS")
+# binding: direct-keybinding
+# --
+
+DM 'vt ${1:&syslast}';$0
+
