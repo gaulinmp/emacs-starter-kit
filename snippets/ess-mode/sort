@@ -1,12 +1,10 @@
 # -*- mode: snippet; require-final-newline: nil -*-
-# name: contents
-# key: contents
+# name: sort
+# key: sort
 # group: sas
-# contributor: Edwin Hu
+# contributor: Mac Gaulin
 # mode: ess-mode
 # condition: (string= ess-language "SAS")
 # type: snippet
 # --
-$0proc datasets nolist;
-     contents data=${1:&syslast.};
-run;
+$0PROC SORT DATA=${1:&syslast.};RUN;

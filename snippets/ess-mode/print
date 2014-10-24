@@ -1,7 +1,7 @@
 # -*- mode: snippet; require-final-newline: nil -*-
 # name: print
 # key: print
-# group: SAS
+# group: sas
 # contributor: Edwin Hu
 # mode: ess-mode
 # condition: (string= ess-language "SAS")
