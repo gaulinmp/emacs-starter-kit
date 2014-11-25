@@ -1,0 +1,15 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: Check Unique
+# key: unique?
+# group: sas
+# contributor: Mac Gaulin
+# mode: ess-mode
+# condition: (string= ess-language "SAS")
+# type: snippet
+# binding: direct-keybinding
+# --
+SELECT COUNT(*) AS not_unique
+FROM(SELECT *
+FROM (SELECT DISTINCT ${1:date}$0 FROM ${2:&syslast.})
+GROUP BY $1
+HAVING COUNT(*) > 1);
