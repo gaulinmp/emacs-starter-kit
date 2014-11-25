@@ -283,4 +283,9 @@ Config taken from http://tuhdo.github.io/helm-intro.html
 (global-set-key (kbd "C-x C-f") 'helm-find-files)
 #+END_SRC
 
+** Start Evil
 
+#+BEGIN_SRC emacs-lisp
+;;(require 'evil)
+;;(require 'evil-org)
+#+END_SRC
